@@ -197,7 +197,13 @@
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.15s;
     }
+    .th:hover { color: var(--cyan-dim); }
+    .th.sort-active { color: var(--cyan); }
+    .th .sort-arrow { margin-left: 4px; font-size: 9px; opacity: 0.7; }
 
     .table-row {
       display: grid;
@@ -487,12 +493,12 @@
     <div class="section-title">Mission Manifest</div>
     <div class="bookings-table">
       <div class="table-header">
-        <div class="th">ID</div>
-        <div class="th">Passenger</div>
-        <div class="th">Destination</div>
-        <div class="th">Departure</div>
-        <div class="th">Class</div>
-        <div class="th">Status</div>
+        <div class="th" onclick="sortBy('id')"         id="th-id">ID</div>
+        <div class="th" onclick="sortBy('passenger_name')" id="th-passenger_name">Passenger</div>
+        <div class="th" onclick="sortBy('destination')" id="th-destination">Destination</div>
+        <div class="th" onclick="sortBy('departure_date')" id="th-departure_date">Departure</div>
+        <div class="th" onclick="sortBy('seat_class')"  id="th-seat_class">Class</div>
+        <div class="th" onclick="sortBy('status')"      id="th-status">Status</div>
         <div class="th">Actions</div>
       </div>
       <div id="bookings-list">
@@ -554,6 +560,55 @@
 <script>
   const API = 'https://space-tours-api.onrender.com';
 
+  // ── Sorting state ────────────────────────────────────────────────────────
+  let sortState = { key: 'id', dir: 'asc' };
+
+  const SORT_ORDER = { pending: 0, confirmed: 1, cancelled: 2 };
+  const CLASS_ORDER = { economy: 0, business: 1, vip: 2 };
+
+  function sortBy(key) {
+    if (sortState.key === key) {
+      sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortState.key = key;
+      sortState.dir = 'asc';
+    }
+    updateSortHeaders();
+    loadBookings();
+  }
+
+  function updateSortHeaders() {
+    ['id','passenger_name','destination','departure_date','seat_class','status'].forEach(k => {
+      const el = document.getElementById('th-' + k);
+      if (!el) return;
+      // strip existing arrow
+      el.textContent = el.textContent.replace(/ [▲▼]$/, '').trim();
+      el.classList.remove('sort-active');
+    });
+    const active = document.getElementById('th-' + sortState.key);
+    if (active) {
+      active.classList.add('sort-active');
+      active.textContent = active.textContent.trim() + ' ' + (sortState.dir === 'asc' ? '▲' : '▼');
+    }
+  }
+
+  function sortBookings(bookings) {
+    const { key, dir } = sortState;
+    return [...bookings].sort((a, b) => {
+      let av = a[key], bv = b[key];
+      // custom order for status and seat_class
+      if (key === 'status')     { av = SORT_ORDER[av] ?? 99; bv = SORT_ORDER[bv] ?? 99; }
+      if (key === 'seat_class') { av = CLASS_ORDER[av] ?? 99; bv = CLASS_ORDER[bv] ?? 99; }
+      if (typeof av === 'number' && typeof bv === 'number') {
+        return dir === 'asc' ? av - bv : bv - av;
+      }
+      av = String(av).toLowerCase(); bv = String(bv).toLowerCase();
+      if (av < bv) return dir === 'asc' ? -1 : 1;
+      if (av > bv) return dir === 'asc' ?  1 : -1;
+      return 0;
+    });
+  }
+
   async function loadBookings() {
     const dest   = document.getElementById('filter-dest').value;
     const status = document.getElementById('filter-status').value;
@@ -566,7 +621,7 @@
     try {
       const r = await fetch(url);
       const bookings = await r.json();
-      renderBookings(bookings);
+      renderBookings(sortBookings(bookings));
       loadStats();
     } catch(e) {
       document.getElementById('bookings-list').innerHTML =
