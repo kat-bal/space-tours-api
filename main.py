@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, Query
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from database import engine, get_db, Base
@@ -9,6 +10,12 @@ from models import BookingDB, BookingCreate, BookingUpdate, BookingResponse
 Base.metadata.create_all(bind=engine)  # vytvorí tabuľky v DB ak ešte neexistujú
 
 app = FastAPI(
+    app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://stellar-command.onrender.com"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
     title="🪐 Space Tours API",
     description="""
 ## Vesmírny objednávkový systém — výukový REST API sandbox
