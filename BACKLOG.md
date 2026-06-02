@@ -13,10 +13,14 @@ _(nič momentálne)_
 - [ ] PUT — čo ak pošleš neplatný status (napr. "status": "flying")?
 
 ## 🟡 Up Next — Funkcionality
+- [ ] Úprava objednávky cez FE — editovací formulár (PUT), zmena poľa priamo z tabuľky
 - [ ] Jazykové verzie (SK/EN) — Swagger dokumentácia aj Frontend
 - [ ] Negative testing scenáre (dokumentácia)
 
 ## 🟢 Nápady / Future
+- [ ] Rozdeliť `passenger_name` na tri samostatné polia: `first_name`, `middle_name` (voliteľné), `last_name` — úprava DB modelu, API aj FE
+
+
 - [ ] Autentifikácia (API key alebo JWT token)
 - [ ] Pagination (GET /bookings?page=1&limit=10)
 - [ ] Sorting (GET /bookings?sort=departure_date)
