@@ -1,9 +1,7 @@
 # 🪐 Space Tours API — Backlog
 
 ## 🔴 In Progress
-- [ ] GitHub repozitár
-- [ ] Render.com nasadenie (cloud)
-- [ ] Frontend
+- [ ] Frontend nasadenie na Render
 
 ## 🟡 Up Next
 - [ ] Jazykové verzie (SK/EN) — Swagger dokumentácia aj Frontend
@@ -11,6 +9,7 @@
 - [ ] Negative testing scenáre
 
 ## 🟢 Nápady / Future
+- [ ] FE: pozadie — vesmírna obloha (CSS/canvas hviezdy alebo NASA obrázok) namiesto solid color
 - [ ] Autentifikácia (API key alebo JWT token)
 - [ ] Pagination (GET /bookings?page=1&limit=10)
 - [ ] Sorting (GET /bookings?sort=departure_date)
@@ -25,3 +24,6 @@
 - [x] Filtrovanie (destination, status)
 - [x] Swagger UI dokumentácia
 - [x] Postman kolekcia
+- [x] GitHub repozitár
+- [x] Render.com nasadenie (API)
+- [x] Frontend — Stellar Command backoffice (design)

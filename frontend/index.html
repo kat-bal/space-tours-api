@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stellar Command — Space Tours Backoffice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080c14;
+      --bg2: #0d1420;
+      --bg3: #111827;
+      --border: rgba(56, 189, 248, 0.15);
+      --border-bright: rgba(56, 189, 248, 0.4);
+      --cyan: #38bdf8;
+      --cyan-dim: rgba(56, 189, 248, 0.6);
+      --amber: #fbbf24;
+      --green: #34d399;
+      --red: #f87171;
+      --purple: #a78bfa;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --text-muted: #475569;
+      --mono: 'Share Tech Mono', monospace;
+      --sans: 'Exo 2', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      font-family: var(--sans);
+      color: var(--text);
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(56,189,248,0.04) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(167,139,250,0.04) 0%, transparent 40%),
+        radial-gradient(circle at 60% 80%, rgba(52,211,153,0.02) 0%, transparent 35%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #app { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--cyan);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .logo span { color: var(--text-muted); margin: 0 8px; }
+
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .status-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 1px;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin: 0 0 24px;
+    }
+
+    .tab {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 12px 20px;
+      cursor: pointer;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: none;
+      transition: all 0.2s;
+    }
+
+    .tab:hover { color: var(--cyan-dim); }
+    .tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+    }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .stat-val {
+      font-family: var(--mono);
+      font-size: 26px;
+      color: var(--cyan);
+    }
+
+    .section-title {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .filter-row select {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 7px 10px;
+      outline: none;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+
+    .filter-row select:focus { border-color: var(--cyan-dim); }
+
+    .bookings-table {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .table-header {
+      display: grid;
+      grid-template-columns: 48px 1fr 120px 110px 90px 100px 100px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+    }
+
+    .th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 48px 1fr 120px 110px 90px 100px 100px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+      transition: background 0.15s;
+    }
+
+    .table-row:last-child { border-bottom: none; }
+    .table-row:hover { background: rgba(56,189,248,0.04); }
+
+    .td { font-size: 13px; color: var(--text); }
+    .td-id { font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
+    .td-name { font-weight: 600; font-size: 13px; }
+
+    .planet-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .planet-Mars     { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+    .planet-Venus    { background: rgba(251,191,36,0.15);  color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+    .planet-Jupiter  { background: rgba(167,139,250,0.15); color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+    .planet-Saturn   { background: rgba(251,191,36,0.12);  color: #f59e0b; border: 1px solid rgba(251,191,36,0.25); }
+    .planet-Mercury  { background: rgba(148,163,184,0.15); color: #94a3b8; border: 1px solid rgba(148,163,184,0.3); }
+    .planet-Uranus   { background: rgba(52,211,153,0.15);  color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+    .planet-Neptune  { background: rgba(56,189,248,0.15);  color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); }
+
+    .status-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .status-pending   { background: rgba(251,191,36,0.1);  color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
+    .status-confirmed { background: rgba(52,211,153,0.1);  color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+    .status-cancelled { background: rgba(248,113,113,0.1); color: var(--red);   border: 1px solid rgba(248,113,113,0.25); }
+
+    .seat-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .action-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.15s;
+      margin-right: 4px;
+    }
+
+    .action-btn:hover     { border-color: var(--cyan); color: var(--cyan); }
+    .action-btn.del:hover { border-color: var(--red);  color: var(--red); }
+
+    /* ── Form ── */
+    .form-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      max-width: 640px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 10px 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--cyan-dim); }
+    .form-group select option { background: var(--bg3); }
+
+    .btn-primary {
+      background: rgba(56,189,248,0.1);
+      border: 1px solid var(--border-bright);
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 11px 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover { background: rgba(56,189,248,0.18); }
+
+    .btn-cancel {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 11px 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 12px;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(8,12,20,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border-bright);
+      border-radius: 8px;
+      padding: 28px;
+      width: 380px;
+    }
+
+    .modal-title {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 14px;
+    }
+
+    .modal-body {
+      font-size: 14px;
+      color: var(--text-dim);
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg3);
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 1px;
+      padding: 12px 18px;
+      border-radius: 4px;
+      display: none;
+      z-index: 100;
+    }
+
+    .toast.error { border-color: var(--red); color: var(--red); }
+    .toast.show { display: block; animation: fadeInUp 0.3s ease; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .empty-state {
+      padding: 48px;
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 768px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .table-header, .table-row { grid-template-columns: 40px 1fr 90px 80px; }
+      .th:nth-child(4), .th:nth-child(5), .th:nth-child(6),
+      .td:nth-child(4), .td:nth-child(5), .td:nth-child(6) { display: none; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="logo">★ Stellar<span>/</span>Command</div>
+    <div>
+      <span class="status-dot"></span>
+      <span class="status-label">API ONLINE</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('missions')">Missions</button>
+    <button class="tab" onclick="showTab('new')">+ New Booking</button>
+  </div>
+
+  <!-- Missions tab -->
+  <div id="tab-missions">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total</div>
+        <div class="stat-val" id="stat-total">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pending</div>
+        <div class="stat-val" id="stat-pending" style="color:var(--amber)">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Confirmed</div>
+        <div class="stat-val" id="stat-confirmed" style="color:var(--green)">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Cancelled</div>
+        <div class="stat-val" id="stat-cancelled" style="color:var(--red)">—</div>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <span class="filter-label">Filter:</span>
+      <select id="filter-dest" onchange="loadBookings()">
+        <option value="">All destinations</option>
+        <option>Mercury</option><option>Venus</option><option>Mars</option>
+        <option>Jupiter</option><option>Saturn</option><option>Uranus</option><option>Neptune</option>
+      </select>
+      <select id="filter-status" onchange="loadBookings()">
+        <option value="">All statuses</option>
+        <option>pending</option><option>confirmed</option><option>cancelled</option>
+      </select>
+      <button class="action-btn" onclick="loadBookings()" style="margin-left:auto">↻ Refresh</button>
+    </div>
+
+    <div class="section-title">Mission Manifest</div>
+    <div class="bookings-table">
+      <div class="table-header">
+        <div class="th">ID</div>
+        <div class="th">Passenger</div>
+        <div class="th">Destination</div>
+        <div class="th">Departure</div>
+        <div class="th">Class</div>
+        <div class="th">Status</div>
+        <div class="th">Actions</div>
+      </div>
+      <div id="bookings-list">
+        <div class="empty-state">Loading missions...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New booking tab -->
+  <div id="tab-new" class="hidden">
+    <div class="section-title">New Mission Booking</div>
+    <div class="form-card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Passenger Name</label>
+          <input type="text" id="f-name" placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label>Destination</label>
+          <select id="f-dest">
+            <option value="">Select planet...</option>
+            <option>Mercury</option><option>Venus</option><option>Mars</option>
+            <option>Jupiter</option><option>Saturn</option><option>Uranus</option><option>Neptune</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Departure Date</label>
+          <input type="date" id="f-date">
+        </div>
+        <div class="form-group">
+          <label>Seat Class</label>
+          <select id="f-class">
+            <option value="economy">Economy</option>
+            <option value="business">Business</option>
+            <option value="vip">VIP</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-cancel" onclick="showTab('missions')">Cancel</button>
+      <button class="btn-primary" onclick="createBooking()">▶ Launch Booking</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Confirm Action</div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Abort</button>
+      <button class="btn-primary" id="modal-confirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+  const API = 'https://space-tours-api.onrender.com';
+
+  async function loadBookings() {
+    const dest   = document.getElementById('filter-dest').value;
+    const status = document.getElementById('filter-status').value;
+    let url = API + '/bookings';
+    const params = [];
+    if (dest)   params.push('destination=' + encodeURIComponent(dest));
+    if (status) params.push('status=' + encodeURIComponent(status));
+    if (params.length) url += '?' + params.join('&');
+
+    try {
+      const r = await fetch(url);
+      const bookings = await r.json();
+      renderBookings(bookings);
+      loadStats();
+    } catch(e) {
+      document.getElementById('bookings-list').innerHTML =
+        '<div class="empty-state">⚠ Cannot reach API. Is the server online?</div>';
+    }
+  }
+
+  async function loadStats() {
+    try {
+      const r = await fetch(API + '/bookings');
+      const all = await r.json();
+      document.getElementById('stat-total').textContent     = all.length;
+      document.getElementById('stat-pending').textContent   = all.filter(b => b.status === 'pending').length;
+      document.getElementById('stat-confirmed').textContent = all.filter(b => b.status === 'confirmed').length;
+      document.getElementById('stat-cancelled').textContent = all.filter(b => b.status === 'cancelled').length;
+    } catch(e) {}
+  }
+
+  function renderBookings(bookings) {
+    const el = document.getElementById('bookings-list');
+    if (!bookings.length) {
+      el.innerHTML = '<div class="empty-state">No missions found</div>';
+      return;
+    }
+    el.innerHTML = bookings.map(b => `
+      <div class="table-row">
+        <div class="td td-id">#${b.id}</div>
+        <div class="td td-name">${b.passenger_name}</div>
+        <div class="td"><span class="planet-badge planet-${b.destination}">${b.destination}</span></div>
+        <div class="td" style="font-family:var(--mono);font-size:12px;color:var(--text-dim)">${b.departure_date}</div>
+        <div class="td"><span class="seat-badge">${b.seat_class}</span></div>
+        <div class="td"><span class="status-badge status-${b.status}">${b.status}</span></div>
+        <div class="td">
+          ${b.status === 'pending'
+            ? `<button class="action-btn" onclick="confirmBooking(${b.id})">✓ OK</button>`
+            : ''}
+          <button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger_name}')">✕</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function showTab(tab) {
+    document.getElementById('tab-missions').classList.toggle('hidden', tab !== 'missions');
+    document.getElementById('tab-new').classList.toggle('hidden', tab !== 'new');
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active',
+        (i === 0 && tab === 'missions') || (i === 1 && tab === 'new'));
+    });
+    if (tab === 'missions') loadBookings();
+  }
+
+  async function createBooking() {
+    const name = document.getElementById('f-name').value.trim();
+    const dest  = document.getElementById('f-dest').value;
+    const date  = document.getElementById('f-date').value;
+    const cls   = document.getElementById('f-class').value;
+
+    if (!name || !dest || !date) { showToast('All fields required', true); return; }
+
+    try {
+      const r = await fetch(API + '/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passenger_name: name, destination: dest, departure_date: date, seat_class: cls })
+      });
+      if (r.ok) {
+        showToast('Mission booked successfully');
+        document.getElementById('f-name').value = '';
+        document.getElementById('f-dest').value = '';
+        document.getElementById('f-date').value = '';
+        showTab('missions');
+      } else {
+        const err = await r.json();
+        showToast(err.detail || 'Error creating booking', true);
+      }
+    } catch(e) { showToast('API unreachable', true); }
+  }
+
+  function confirmBooking(id) {
+    showModal('Confirm Mission', `Set booking <strong>#${id}</strong> status to CONFIRMED?`, async () => {
+      await fetch(API + '/bookings/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'confirmed' })
+      });
+      showToast('Mission confirmed');
+      loadBookings();
+    });
+  }
+
+  function deleteBooking(id, name) {
+    showModal('Abort Mission', `Permanently delete booking for <strong>${name}</strong>?<br>This cannot be undone.`, async () => {
+      await fetch(API + '/bookings/' + id, { method: 'DELETE' });
+      showToast('Mission deleted');
+      loadBookings();
+    });
+  }
+
+  function showModal(title, body, onConfirm) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = body;
+    document.getElementById('modal').classList.remove('hidden');
+    document.getElementById('modal-confirm').onclick = () => { closeModal(); onConfirm(); };
+  }
+
+  function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+
+  function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = (isError ? '⚠ ' : '✓ ') + msg;
+    t.className = 'toast' + (isError ? ' error' : '') + ' show';
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  loadBookings();
+</script>
+</body>
+</html>
