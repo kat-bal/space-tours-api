@@ -158,6 +158,14 @@ def get_booking(booking_id: int, db: Session = Depends(get_db)):
     return booking
 
 
+# Povolené prechody medzi stavmi objednávky
+VALID_STATUS_TRANSITIONS = {
+    "pending":   ["confirmed", "cancelled"],
+    "confirmed": ["cancelled"],
+    "cancelled": [],  # finálny stav — žiadne ďalšie prechody
+}
+
+
 # PUT /bookings/{id} — úprava objednávky
 @app.put(
     "/bookings/{booking_id}",
@@ -170,16 +178,35 @@ def update_booking(booking_id: int, updates: BookingUpdate, db: Session = Depend
     """
     Aktualizuje existujúcu objednávku. Môžeš zmeniť ľubovoľné pole.
 
+    ### Povolené prechody stavu (status transitions):
+    - `pending` → `confirmed`
+    - `pending` → `cancelled`
+    - `confirmed` → `cancelled`
+    - `cancelled` → *(žiadny ďalší prechod nie je povolený)*
+
     Príklady použitia:
     - Potvrdenie objednávky: `{"status": "confirmed"}`
+    - Zrušenie objednávky: `{"status": "cancelled"}`
     - Zmena destinácie: `{"destination": "Saturn"}`
-    - Zrušenie: `{"status": "cancelled"}`
     """
     booking = db.query(BookingDB).filter(BookingDB.id == booking_id).first()
     if not booking:
         raise HTTPException(status_code=404, detail=f"Objednávka s ID {booking_id} neexistuje")
 
     update_data = updates.model_dump(exclude_unset=True)  # len polia ktoré prišli v requeste
+
+    # Validácia prechodu stavu
+    if "status" in update_data:
+        new_status = update_data["status"]
+        current_status = booking.status
+        allowed = VALID_STATUS_TRANSITIONS.get(current_status, [])
+        if new_status not in allowed:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Neplatný prechod stavu: '{current_status}' → '{new_status}'. "
+                       f"Povolené prechody z '{current_status}': {allowed if allowed else 'žiadne'}"
+            )
+
     for field, value in update_data.items():
         setattr(booking, field, value)
 
@@ -200,11 +227,20 @@ def delete_booking(booking_id: int, db: Session = Depends(get_db)):
     """
     Natrvalo vymaže objednávku z databázy.
 
+    Podmienka: objednávka musí byť v stave **cancelled**.
     Ak objednávka neexistuje, vráti **404 Not Found**.
+    Ak objednávka nie je cancelled, vráti **422 Unprocessable Entity**.
     """
     booking = db.query(BookingDB).filter(BookingDB.id == booking_id).first()
     if not booking:
         raise HTTPException(status_code=404, detail=f"Objednávka s ID {booking_id} neexistuje")
+
+    if booking.status != "cancelled":
+        raise HTTPException(
+            status_code=422,
+            detail=f"Objednávku možno vymazať iba ak je v stave 'cancelled'. "
+                   f"Aktuálny stav: '{booking.status}'"
+        )
 
     db.delete(booking)
     db.commit()

@@ -269,8 +269,10 @@
       margin-right: 4px;
     }
 
-    .action-btn:hover     { border-color: var(--cyan); color: var(--cyan); }
-    .action-btn.del:hover { border-color: var(--red);  color: var(--red); }
+    .action-btn:hover        { border-color: var(--cyan); color: var(--cyan); }
+    .action-btn.del:hover    { border-color: var(--red);  color: var(--red); }
+    .action-btn.cancel-btn:hover { border-color: var(--amber); color: var(--amber); }
+    .action-btn[disabled]    { opacity: 0.25; cursor: not-allowed; pointer-events: none; }
 
     /* ── Form ── */
     .form-card {
@@ -599,9 +601,14 @@
         <div class="td"><span class="status-badge status-${b.status}">${b.status}</span></div>
         <div class="td">
           ${b.status === 'pending'
-            ? `<button class="action-btn" onclick="confirmBooking(${b.id})">✓ OK</button>`
+            ? `<button class="action-btn" onclick="confirmBooking(${b.id})">✓ Confirm</button>`
             : ''}
-          <button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger_name}')">✕</button>
+          ${b.status === 'pending' || b.status === 'confirmed'
+            ? `<button class="action-btn cancel-btn" onclick="cancelBooking(${b.id}, '${b.passenger_name}')">✕ Cancel</button>`
+            : ''}
+          ${b.status === 'cancelled'
+            ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger_name}')">🗑 Delete</button>`
+            : `<button class="action-btn del" disabled title="Najprv zruš objednávku">🗑 Delete</button>`}
         </div>
       </div>
     `).join('');
@@ -656,10 +663,32 @@
     });
   }
 
+  function cancelBooking(id, name) {
+    showModal('Cancel Mission', `Cancel booking for <strong>${name}</strong>?<br>The booking will move to CANCELLED status.`, async () => {
+      const r = await fetch(API + '/bookings/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'cancelled' })
+      });
+      if (r.ok) {
+        showToast('Mission cancelled');
+      } else {
+        const err = await r.json();
+        showToast(err.detail || 'Error cancelling booking', true);
+      }
+      loadBookings();
+    });
+  }
+
   function deleteBooking(id, name) {
-    showModal('Abort Mission', `Permanently delete booking for <strong>${name}</strong>?<br>This cannot be undone.`, async () => {
-      await fetch(API + '/bookings/' + id, { method: 'DELETE' });
-      showToast('Mission deleted');
+    showModal('Delete Mission', `Permanently delete booking for <strong>${name}</strong>?<br>This cannot be undone.`, async () => {
+      const r = await fetch(API + '/bookings/' + id, { method: 'DELETE' });
+      if (r.ok) {
+        showToast('Mission deleted');
+      } else {
+        const err = await r.json();
+        showToast(err.detail || 'Error deleting booking', true);
+      }
       loadBookings();
     });
   }
