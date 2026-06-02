@@ -52,7 +52,11 @@ space-tours-api/
 ├── requirements.txt  # Python závislosti
 ├── .env              # Lokálne env premenné — nie je v gite!
 ├── frontend/
-│   └── index.html    # Stellar Command backoffice UI
+│   ├── index.html    # Stellar Command backoffice UI
+│   ├── favicon.ico
+│   ├── favicon-32x32.png
+│   ├── favicon-180x180.png
+│   └── favicon-192x192.png
 ├── BACKLOG.md        # Backlog projektu
 ├── CONTEXT.md        # Tento súbor
 └── README.md         # Inštrukcie pre spustenie
@@ -154,3 +158,28 @@ Pozri `BACKLOG.md` pre úplný zoznam. Hlavné priority:
 1. Validácie (oprava known bugs)
 2. Jazykové verzie (SK/EN)
 3. Frontend pre klientov (oddelený od backoffice)
+
+---
+
+## Práca s Claudom
+
+GitHub repozitár je verejný — Claude si vie stiahnuť aktuálny stav priamo:
+
+```bash
+git clone https://github.com/kat-bal/space-tours-api.git
+```
+
+### Workflow
+1. Claude si stiahne repozitár z GitHubu a prečíta aktuálny stav súborov
+2. Upraví súbory podľa zadania
+3. Vygeneruje upravené súbory na stiahnutie
+4. Vyučujúca ich skopíruje do repozitára, commitne a pushne
+
+### Čo Claude vie robiť
+- Čítať a upravovať všetky projektové súbory
+- Generovať nové funkcie, validácie, endpointy
+- Aktualizovať dokumentáciu (CONTEXT.md, BACKLOG.md, README.md)
+- Pripravovať commit messages
+
+### Čo musí urobiť vyučujúca
+- `git add`, `git commit`, `git push` — Claude nemá prístup k credentials
