@@ -5,17 +5,9 @@ from typing import List, Optional
 from database import engine, get_db, Base
 from models import BookingDB, BookingCreate, BookingUpdate, BookingResponse
 
-# ── Inicializácia aplikácie ───────────────────────────────────────────────────
-
-Base.metadata.create_all(bind=engine)  # vytvorí tabuľky v DB ak ešte neexistujú
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://stellar-command.onrender.com"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
     title="🪐 Space Tours API",
     description="""
 ## Vesmírny objednávkový systém — výukový REST API sandbox
@@ -39,6 +31,12 @@ Pomocou tohto API môžeš:
     version="1.0.0",
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://stellar-command.onrender.com"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ── Destinácie (statický zoznam, nie DB) ─────────────────────────────────────
 
