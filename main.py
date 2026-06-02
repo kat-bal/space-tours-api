@@ -7,6 +7,9 @@ from models import BookingDB, BookingCreate, BookingUpdate, BookingResponse
 
 Base.metadata.create_all(bind=engine)
 
+from seed import seed
+seed()
+
 app = FastAPI(
     title="🪐 Space Tours API",
     description="""
