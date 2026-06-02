@@ -22,6 +22,7 @@ Téma: objednávkový systém zájazdov na planéty slnečnej sústavy.
 | API (base URL) | https://space-tours-api.onrender.com |
 | Frontend (backoffice) | https://stellar-command.onrender.com |
 | GitHub | https://github.com/kat-bal/space-tours-api |
+| Databáza (Neon) | https://console.neon.tech |
 
 > ⚠️ Render free tier uspí server po 15 minútach nečinnosti. Prvý request po spánku trvá 30-60 sekúnd.
 
@@ -32,7 +33,7 @@ Téma: objednávkový systém zájazdov na planéty slnečnej sústavy.
 | Vrstva | Technológia |
 |--------|-------------|
 | Backend | Python 3.12 + FastAPI |
-| Databáza | SQLite (lokálne), plánujeme PostgreSQL (Render) |
+| Databáza | PostgreSQL 16 cez Neon.tech (lokálne: SQLite fallback) |
 | ORM | SQLAlchemy |
 | Frontend | Vanilla HTML/CSS/JS |
 | Hosting | Render.com (free tier) |
@@ -45,10 +46,11 @@ Téma: objednávkový systém zájazdov na planéty slnečnej sústavy.
 ```
 space-tours-api/
 ├── main.py           # FastAPI aplikácia, všetky endpointy
-├── database.py       # Pripojenie k SQLite
+├── database.py       # Pripojenie k DB (Neon/PostgreSQL v produkcii, SQLite lokálne)
 ├── models.py         # Databázové modely + Pydantic schémy
 ├── seed.py           # Seed skript — naplní DB testovacími dátami
 ├── requirements.txt  # Python závislosti
+├── .env              # Lokálne env premenné — nie je v gite!
 ├── frontend/
 │   └── index.html    # Stellar Command backoffice UI
 ├── BACKLOG.md        # Backlog projektu
@@ -99,10 +101,14 @@ venv\Scripts\activate      # Windows
 # 2. Nainštaluj závislosti (len prvýkrát)
 pip install -r requirements.txt
 
-# 3. Spusti server
+# 3. Vytvor .env súbor s connection stringom (len prvýkrát)
+# DATABASE_URL=postgresql://...  ← z Neon dashboardu
+# Bez .env súboru sa použije SQLite ako fallback
+
+# 4. Spusti server
 uvicorn main:app --reload
 
-# 4. Voliteľne — naplň DB testovacími dátami
+# 5. Voliteľne — naplň DB testovacími dátami
 python3 seed.py
 ```
 
@@ -111,10 +117,21 @@ Swagger: http://localhost:8000/docs
 
 ---
 
+## Databáza
+
+- **Produkcia:** PostgreSQL 16 na [Neon.tech](https://console.neon.tech) — permanent free tier, 0.5 GB
+- **Lokálne:** SQLite fallback (ak nie je nastavená `DATABASE_URL` v `.env`)
+- **Seed:** 10 testovacích objednávok, spustí sa automaticky pri štarte ak je DB prázdna
+- **Štruktúra:** jedna tabuľka `bookings` — definovaná v `models.py` (trieda `BookingDB`)
+- **SQL Editor:** dostupný priamo v Neon dashboarde
+
+---
+
 ## Nástroje
 
 - **Swagger UI** — interaktívna dokumentácia, ideálna pre začiatočníkov
 - **Postman** — kolekcia uložená lokálne (TODO: exportovať do repozitára)
+- **Neon SQL Editor** — priamy prístup do databázy cez browser
 
 ---
 
@@ -134,7 +151,6 @@ Toto sú známe nedostatky ktoré slúžia ako cvičné nálezy pre junior teste
 ## Ďalšie plány
 
 Pozri `BACKLOG.md` pre úplný zoznam. Hlavné priority:
-1. PostgreSQL namiesto SQLite (perzistentná DB na Render)
-2. Validácie (oprava known bugs)
-3. Vesmírne pozadie na frontende
-4. Frontend pre klientov (oddelený od backoffice)
+1. Validácie (oprava known bugs)
+2. Jazykové verzie (SK/EN)
+3. Frontend pre klientov (oddelený od backoffice)

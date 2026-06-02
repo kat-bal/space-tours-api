@@ -1,7 +1,7 @@
 # 🪐 Space Tours API — Backlog
 
 ## 🔴 In Progress
-- [ ] Seed data skript (automatické naplnenie DB testovacími dátami)
+_(nič momentálne)_
 
 ## 🟡 Up Next — Validácie (známe bugy, ideálne pre junior testerky)
 - [ ] `departure_date` — nemožno zadať dátum v minulosti
@@ -17,7 +17,6 @@
 - [ ] Negative testing scenáre (dokumentácia)
 
 ## 🟢 Nápady / Future
-- [ ] FE: pozadie — vesmírna obloha (CSS/canvas hviezdy alebo NASA obrázok) namiesto solid color
 - [ ] Autentifikácia (API key alebo JWT token)
 - [ ] Pagination (GET /bookings?page=1&limit=10)
 - [ ] Sorting (GET /bookings?sort=departure_date)
@@ -37,3 +36,6 @@
 - [x] CORS middleware
 - [x] Frontend — Stellar Command backoffice
 - [x] Render.com nasadenie (Frontend)
+- [x] Seed data skript (automatické naplnenie DB testovacími dátami)
+- [x] PostgreSQL — migrácia na Neon.tech (permanent free tier)
+- [x] Vesmírne pozadie na frontende (canvas hviezdy + shooting stars)
