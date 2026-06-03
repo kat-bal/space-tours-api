@@ -24,16 +24,49 @@ _(nič momentálne)_
 
 ## 🟢 Nápady / Future
 - [ ] Rozdeliť `passenger_name` na tri samostatné polia: `first_name`, `middle_name` (voliteľné), `last_name` — úprava DB modelu, API aj FE
-- [ ] Autentifikácia (API key alebo JWT token)
 - [ ] Pagination (GET /bookings?page=1&limit=10)
 - [ ] Sorting (GET /bookings?sort=departure_date)
 - [ ] Postman environment variables ({{base_url}}, {{booking_id}})
 - [ ] Exportovať Postman kolekciu do repozitára
-- [ ] Frontend pre klientov (oddelený od backoffice)
 
 ## 🧪 QA / Výuka
 - [ ] Vytoriť špeciálny `buggy` branch s úmyselnými bugmi — na výuku testovania
 - [ ] Vytvoriť release verziu z `buggy` branchu nasadenú na samostatnom prostredí (druhý Render service) — aby mohli byť naraz nasadené dve verzie (stable + buggy)
+
+## 🧊 Icebox / Future Scope
+_Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa stať prioritou alebo zostať tu navždy._
+
+### Backend / API
+- [ ] Autentifikácia — API key (jednoduchšie) alebo JWT tokeny (reálnejší auth flow, Bearer tokeny, chránené endpointy)
+- [ ] Payments integrácia — Stripe, webhooky, idempotency
+- [ ] Rate limiting — ochrana API pred spamom
+- [ ] Background tasks — napr. confirmation email po vytvorení objednávky (FastAPI má zabudované)
+- [ ] Email notifikácie — SendGrid alebo Resend
+
+### Testing / QA
+- [ ] Pytest — automatizované testy pre FastAPI endpointy
+- [ ] GitHub Actions CI — automatické spúšťanie testov pri každom push
+- [ ] Playwright — end-to-end testy pre Stellar Command FE (Python knižnica, Page Object Model)
+- [ ] Postman / Newman — automatizované spúšťanie Postman kolekcií v CI
+- [ ] Load testing — Locust (Python), simulácia záťaže na endpointy
+- [ ] Contract testing — Pact, overenie že FE a API sa zhodujú na formáte dát
+
+### Messaging / Event-Driven
+- [ ] RabbitMQ integrácia — event-driven notifikácie pri zmene stavu objednávky (napr. `booking.confirmed`, `booking.cancelled`)
+- [ ] Producer v API — pri PUT /bookings publishnúť event do fronty
+- [ ] Consumer worker — samostatný Python proces ktorý správy číta a spracováva (email, štatistiky, payments)
+- [ ] Lokálny setup cez Docker, produkcia cez CloudAMQP (free tier)
+- [ ] Kafka ako alternatíva pre pokročilejší use case (vysoký objem správ, event log)
+
+### DevOps / Infraštruktúra
+- [ ] Docker — zabaliť appku do kontajnera
+- [ ] Environment management — `.env`, secrets, dev/staging/prod rozdiel
+- [ ] Monitoring — Sentry pre error tracking a alerting
+- [ ] Staging prostredie — druhý branch (`develop`) nasadený na samostatných Render službách (2× BE, 2× FE, 2× DB)
+- [ ] Semantic versioning — `MAJOR.MINOR.PATCH`, GitHub releases pri väčších nasadeniach
+
+### Frontend
+- [ ] Frontend pre klientov — verejná stránka oddelená od backoffice (Stellar Command)
 
 ## ✅ Hotovo
 - [x] FastAPI projekt — lokálne
