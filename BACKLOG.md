@@ -8,20 +8,19 @@ _(nič momentálne)_
 - [ ] `passenger_name` — minimálna dĺžka mena (napr. aspoň 2 znaky)
 - [ ] `passenger_name` — maximálna dĺžka mena
 - [ ] `departure_date` — validácia formátu (teraz prijme akýkoľvek string)
-- [ ] `departure_date` — nevaliduje neexistujúce dátumy (napr. 2026-02-31 prejde cez API; FE to blokuje cez `input type=date`)
 - [ ] Čo sa stane ak pošleš prázdny request body?
 - [ ] Čo sa stane ak pošleš neznáme pole (napr. "colour": "red")?
 - [ ] PUT — čo ak pošleš neplatný status (napr. "status": "flying")?
 
 ## 🟡 Up Next — Funkcionality
 - [ ] Úprava objednávky cez FE — editovací formulár (PUT), zmena poľa priamo z tabuľky
+- [ ] Stránka Destinations — zoznam planét s popisom (vzdialenosť, dĺžka letu, cena)
+- [ ] V destination selectione označiť niektorú planétu ako `disabled` s poznámkou "Tour coming soon"
 - [ ] Jazykové verzie (SK/EN) — Swagger dokumentácia aj Frontend
 - [ ] Negative testing scenáre (dokumentácia)
 
 ## 🟢 Nápady / Future
 - [ ] Rozdeliť `passenger_name` na tri samostatné polia: `first_name`, `middle_name` (voliteľné), `last_name` — úprava DB modelu, API aj FE
-
-
 - [ ] Autentifikácia (API key alebo JWT token)
 - [ ] Pagination (GET /bookings?page=1&limit=10)
 - [ ] Sorting (GET /bookings?sort=departure_date)
@@ -44,4 +43,3 @@ _(nič momentálne)_
 - [x] Seed data skript (automatické naplnenie DB testovacími dátami)
 - [x] PostgreSQL — migrácia na Neon.tech (permanent free tier)
 - [x] Vesmírne pozadie na frontende (canvas hviezdy + shooting stars)
-- [x] Favicon — Spark icon (Stellar Command)
