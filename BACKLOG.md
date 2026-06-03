@@ -21,6 +21,7 @@ _(nič momentálne)_
 - [ ] Výber stravovania a ďalších doplnkov (addons) pri vytváraní objednávky
 - [ ] Jazykové verzie (SK/EN) — Swagger dokumentácia aj Frontend
 - [ ] Negative testing scenáre (dokumentácia)
+- [ ] Design Doc — popis funkcionality appky so screenshotmi, slúži ako podklad pre vývoj aj testovanie
 
 ## 🟢 Nápady / Future
 - [ ] Rozdeliť `passenger_name` na tri samostatné polia: `first_name`, `middle_name` (voliteľné), `last_name` — úprava DB modelu, API aj FE
