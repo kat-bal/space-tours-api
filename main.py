@@ -11,7 +11,7 @@ from seed import seed
 seed()
 
 app = FastAPI(
-    title="🪐 Space Tours API",
+    title="🪐 Space Tours API — BUGGY",
     description="""
 ## Vesmírny objednávkový systém — výukový REST API sandbox
 
@@ -31,12 +31,12 @@ Pomocou tohto API môžeš:
 ### Stavy objednávky
 `pending` → `confirmed` → `cancelled`
     """,
-    version="1.0.0",
+    version="1.0.0-buggy",
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://stellar-command.onrender.com"],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -73,10 +73,15 @@ def list_destinations():
 
 
 # POST /bookings — nová objednávka
+# 🐛 BUG-01: Vracia status 200 namiesto správneho 201 Created
+# 🐛 BUG-02: departure_date akceptuje ľubovoľný string (napr. "banán")
+# 🐛 BUG-03: departure_date akceptuje dátumy v minulosti
+# 🐛 BUG-04: passenger_name bez min/max dĺžky (prázdny string je OK)
+# 🐛 BUG-05: Duplikátné objednávky — rovnaký cestujúci+destinácia+dátum možno vytvoriť opakovane
 @app.post(
     "/bookings",
     response_model=BookingResponse,
-    status_code=201,
+    status_code=200,  # 🐛 BUG-01: malo by byť 201
     tags=["Bookings"],
     summary="Vytvor novú objednávku",
     response_description="Vytvorená objednávka vrátane prideleného ID",
@@ -92,6 +97,10 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
 
     Objednávka bude mať automaticky status **pending**.
     """
+    # 🐛 BUG-02 + BUG-03: Chýba validácia departure_date (formát aj minulosť)
+    # 🐛 BUG-04: Chýba validácia dĺžky passenger_name
+    # 🐛 BUG-05: Chýba kontrola duplicít
+
     valid_destinations = [d["name"] for d in DESTINATIONS]
     if booking.destination not in valid_destinations:
         raise HTTPException(
@@ -112,6 +121,7 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
 
 
 # GET /bookings — zoznam všetkých objednávok
+# 🐛 BUG-06: Filter ?status= je case-sensitive — "Pending" vráti prázdne pole bez chyby
 @app.get(
     "/bookings",
     response_model=List[BookingResponse],
@@ -134,14 +144,15 @@ def list_bookings(
     if destination:
         query = query.filter(BookingDB.destination == destination)
     if status:
+        # 🐛 BUG-06: case-sensitive filter — "Pending" != "pending", vráti [] bez chyby
         query = query.filter(BookingDB.status == status)
     return query.all()
 
 
 # GET /bookings/{id} — detail jednej objednávky
+# 🐛 BUG-07: Neexistujúce ID vráti 200 s null hodnotami namiesto 404
 @app.get(
     "/bookings/{booking_id}",
-    response_model=BookingResponse,
     tags=["Bookings"],
     summary="Detail objednávky",
     response_description="Jedna objednávka podľa ID",
@@ -153,20 +164,24 @@ def get_booking(booking_id: int, db: Session = Depends(get_db)):
     Ak objednávka neexistuje, vráti **404 Not Found**.
     """
     booking = db.query(BookingDB).filter(BookingDB.id == booking_id).first()
+    # 🐛 BUG-07: Chýba 404 — funkcia vráti None → FastAPI serializuje ako null
     if not booking:
-        raise HTTPException(status_code=404, detail=f"Objednávka s ID {booking_id} neexistuje")
+        return None
     return booking
 
 
 # Povolené prechody medzi stavmi objednávky
+# 🐛 BUG-08: VALID_STATUS_TRANSITIONS sa vôbec nepoužíva — akýkoľvek status prejde
 VALID_STATUS_TRANSITIONS = {
     "pending":   ["confirmed", "cancelled"],
     "confirmed": ["cancelled"],
-    "cancelled": [],  # finálny stav — žiadne ďalšie prechody
+    "cancelled": [],
 }
 
 
 # PUT /bookings/{id} — úprava objednávky
+# 🐛 BUG-08: Chýba validácia prechodu stavu (napr. "flying" je platný status)
+# 🐛 BUG-09: Cancelled objednávku možno znovu otvoriť späť na "pending"
 @app.put(
     "/bookings/{booking_id}",
     response_model=BookingResponse,
@@ -178,12 +193,6 @@ def update_booking(booking_id: int, updates: BookingUpdate, db: Session = Depend
     """
     Aktualizuje existujúcu objednávku. Môžeš zmeniť ľubovoľné pole.
 
-    ### Povolené prechody stavu (status transitions):
-    - `pending` → `confirmed`
-    - `pending` → `cancelled`
-    - `confirmed` → `cancelled`
-    - `cancelled` → *(žiadny ďalší prechod nie je povolený)*
-
     Príklady použitia:
     - Potvrdenie objednávky: `{"status": "confirmed"}`
     - Zrušenie objednávky: `{"status": "cancelled"}`
@@ -193,19 +202,10 @@ def update_booking(booking_id: int, updates: BookingUpdate, db: Session = Depend
     if not booking:
         raise HTTPException(status_code=404, detail=f"Objednávka s ID {booking_id} neexistuje")
 
-    update_data = updates.model_dump(exclude_unset=True)  # len polia ktoré prišli v requeste
+    update_data = updates.model_dump(exclude_unset=True)
 
-    # Validácia prechodu stavu
-    if "status" in update_data:
-        new_status = update_data["status"]
-        current_status = booking.status
-        allowed = VALID_STATUS_TRANSITIONS.get(current_status, [])
-        if new_status not in allowed:
-            raise HTTPException(
-                status_code=422,
-                detail=f"Neplatný prechod stavu: '{current_status}' → '{new_status}'. "
-                       f"Povolené prechody z '{current_status}': {allowed if allowed else 'žiadne'}"
-            )
+    # 🐛 BUG-08: Validácia stavu úplne chýba — akýkoľvek string prejde
+    # 🐛 BUG-09: Cancelled → pending prechod nie je blokovaný
 
     for field, value in update_data.items():
         setattr(booking, field, value)
@@ -216,6 +216,7 @@ def update_booking(booking_id: int, updates: BookingUpdate, db: Session = Depend
 
 
 # DELETE /bookings/{id} — zmazanie objednávky
+# 🐛 BUG-10: Maže akúkoľvek objednávku bez ohľadu na stav (aj confirmed!)
 @app.delete(
     "/bookings/{booking_id}",
     status_code=200,
@@ -227,20 +228,13 @@ def delete_booking(booking_id: int, db: Session = Depends(get_db)):
     """
     Natrvalo vymaže objednávku z databázy.
 
-    Podmienka: objednávka musí byť v stave **cancelled**.
     Ak objednávka neexistuje, vráti **404 Not Found**.
-    Ak objednávka nie je cancelled, vráti **422 Unprocessable Entity**.
     """
     booking = db.query(BookingDB).filter(BookingDB.id == booking_id).first()
     if not booking:
         raise HTTPException(status_code=404, detail=f"Objednávka s ID {booking_id} neexistuje")
 
-    if booking.status != "cancelled":
-        raise HTTPException(
-            status_code=422,
-            detail=f"Objednávku možno vymazať iba ak je v stave 'cancelled'. "
-                   f"Aktuálny stav: '{booking.status}'"
-        )
+    # 🐛 BUG-10: Chýba kontrola stavu — maže aj pending a confirmed objednávky!
 
     db.delete(booking)
     db.commit()
@@ -254,9 +248,8 @@ def root():
         "status": "online",
         "message": "🪐 Space Tours API beží. Choď na /docs pre Swagger dokumentáciu.",
         "docs": "/docs",
-        "version": "1.0.0"
+        "version": "1.0.0-buggy"
     }
 
 
-# Oprava - destinations premenná musí byť definovaná
 destinations = DESTINATIONS
