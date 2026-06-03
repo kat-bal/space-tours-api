@@ -16,6 +16,9 @@ _(nič momentálne)_
 - [ ] Úprava objednávky cez FE — editovací formulár (PUT), zmena poľa priamo z tabuľky
 - [ ] Stránka Destinations — zoznam planét s popisom (vzdialenosť, dĺžka letu, cena)
 - [ ] V destination selectione označiť niektorú planétu ako `disabled` s poznámkou "Tour coming soon"
+- [ ] Zobraziť čas doletu na planétu — vypočítať a zobraziť dĺžku cesty pri výbere destinácie (FE aj API `/destinations`)
+- [ ] Filtrovanie na FE podľa travel class (seat_class)
+- [ ] Výber stravovania a ďalších doplnkov (addons) pri vytváraní objednávky
 - [ ] Jazykové verzie (SK/EN) — Swagger dokumentácia aj Frontend
 - [ ] Negative testing scenáre (dokumentácia)
 
@@ -27,6 +30,10 @@ _(nič momentálne)_
 - [ ] Postman environment variables ({{base_url}}, {{booking_id}})
 - [ ] Exportovať Postman kolekciu do repozitára
 - [ ] Frontend pre klientov (oddelený od backoffice)
+
+## 🧪 QA / Výuka
+- [ ] Vytoriť špeciálny `buggy` branch s úmyselnými bugmi — na výuku testovania
+- [ ] Vytvoriť release verziu z `buggy` branchu nasadenú na samostatnom prostredí (druhý Render service) — aby mohli byť naraz nasadené dve verzie (stable + buggy)
 
 ## ✅ Hotovo
 - [x] FastAPI projekt — lokálne
