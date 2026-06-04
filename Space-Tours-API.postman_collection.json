@@ -80,7 +80,7 @@
               "pm.test('Response contains booking ID', function () {",
               "    var json = pm.response.json();",
               "    pm.expect(json).to.have.property('id');",
-              "    pm.collectionVariables.set('booking_id', json.id);",
+              "    pm.environment.set('booking_id', json.id);",
               "});",
               "pm.test('Status is pending', function () {",
               "    var json = pm.response.json();",
@@ -203,9 +203,9 @@
               "pm.test('Status code is 200', function () {",
               "    pm.response.to.have.status(200);",
               "});",
-              "pm.test('Status was updated to confirmed', function () {",
+              "pm.test('Status was updated to cancelled', function () {",
               "    var json = pm.response.json();",
-              "    pm.expect(json.status).to.eql('confirmed');",
+              "    pm.expect(json.status).to.eql('cancelled');",
               "});",
               "pm.test('ID matches requested ID', function () {",
               "    var json = pm.response.json();",
@@ -221,7 +221,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"status\": \"confirmed\"\n}",
+          "raw": "{\n  \"status\": \"cancelled\"\n}",
           "options": {
             "raw": {
               "language": "json"
