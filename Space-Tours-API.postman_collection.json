@@ -1,0 +1,107 @@
+{
+  "info": {
+    "_postman_id": "3d6e80a0-6ca2-40ca-b8ca-443b738c1a1e",
+    "name": "Space-Tours-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "18266109"
+  },
+  "item": [
+    {
+      "name": "Health-Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/"
+      },
+      "response": []
+    },
+    {
+      "name": "Get-Destinations",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/destinations"
+      },
+      "response": []
+    },
+    {
+      "name": "Create-Booking",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger_name\": \"Stratus Hypert\",\n  \"destination\": \"Jupiter\",\n  \"departure_date\": \"2027-02-02\",\n  \"seat_class\": \"business\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{base_url}}/bookings"
+      },
+      "response": []
+    },
+    {
+      "name": "Get-All-Bookings",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/bookings",
+          "query": [
+            {
+              "key": "destination",
+              "value": "Saturn",
+              "description": "Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune",
+              "disabled": true
+            },
+            {
+              "key": "status",
+              "value": "pending",
+              "description": "pending, confirmed, cancelled",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get-Booking-By-ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/bookings/{{booking_id}}"
+      },
+      "response": []
+    },
+    {
+      "name": "Update-Booking",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"confirmed\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{base_url}}/bookings/{{booking_id}}"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete-Booking",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{base_url}}/bookings/{{booking_id}}"
+      },
+      "response": []
+    }
+  ]
+}
