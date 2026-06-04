@@ -25,15 +25,13 @@ _(nič momentálne)_
 - [ ] Generovanie dokumentov pre klienta
   - Potvrdenie objednávky (booking confirmation) — PDF alebo HTML
   - Prípadne ďalšie doklady (palubný lístok, itinerár cesty...)
-- [ ] Negative testing scenáre (dokumentácia)
+- [ ] Negative testing scenáre (dokumentácia) - aktuálne jeden negative test v Postman kolekcii
 - [ ] Design Doc — popis funkcionality appky so screenshotmi, slúži ako podklad pre vývoj aj testovanie
 
 ## 🟢 Nápady / Future
 - [ ] Rozdeliť `passenger_name` na tri samostatné polia: `first_name`, `middle_name` (voliteľné), `last_name` — úprava DB modelu, API aj FE
 - [ ] Pagination (GET /bookings?page=1&limit=10)
 - [ ] Sorting (GET /bookings?sort=departure_date)
-- [ ] Postman environment variables ({{base_url}}, {{booking_id}})
-- [ ] Exportovať Postman kolekciu do repozitára
 
 ## 🧪 QA / Výuka
 
@@ -73,6 +71,8 @@ _Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa sta
 - [ ] Frontend pre klientov — verejná stránka oddelená od backoffice (Stellar Command)
 
 ## ✅ Hotovo
+- [x] Postman environment variables ({{base_url}}, {{booking_id}})
+- [x] Exportovať Postman kolekciu do repozitára
 - [x] `buggy` branch s úmyselnými bugmi — na výuku testovania
 - [x] Buggy verzia nasadená na samostatnom prostredí (Render) — dve verzie naraz (stable + buggy)
   - stable: https://space-tours-api.onrender.com / https://stellar-command.onrender.com
