@@ -36,8 +36,6 @@ _(nič momentálne)_
 - [ ] Exportovať Postman kolekciu do repozitára
 
 ## 🧪 QA / Výuka
-- [ ] Vytoriť špeciálny `buggy` branch s úmyselnými bugmi — na výuku testovania
-- [ ] Vytvoriť release verziu z `buggy` branchu nasadenú na samostatnom prostredí (druhý Render service) — aby mohli byť naraz nasadené dve verzie (stable + buggy)
 
 ## 🧊 Icebox / Future Scope
 _Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa stať prioritou alebo zostať tu navždy._
@@ -75,6 +73,10 @@ _Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa sta
 - [ ] Frontend pre klientov — verejná stránka oddelená od backoffice (Stellar Command)
 
 ## ✅ Hotovo
+- [x] `buggy` branch s úmyselnými bugmi — na výuku testovania
+- [x] Buggy verzia nasadená na samostatnom prostredí (Render) — dve verzie naraz (stable + buggy)
+  - stable: https://space-tours-api.onrender.com / https://stellar-command.onrender.com
+  - buggy: https://space-tours-api-x.onrender.com / https://stellar-command-x.onrender.com
 - [x] FastAPI projekt — lokálne
 - [x] SQLite databáza
 - [x] CRUD endpointy (POST, GET, GET by ID, PUT, DELETE)

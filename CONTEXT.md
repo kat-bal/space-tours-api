@@ -16,13 +16,29 @@ Téma: objednávkový systém zájazdov na planéty slnečnej sústavy.
 
 ## Živé URL
 
+### Stable (main branch)
+
 | Služba | URL |
 |--------|-----|
 | API (Swagger UI) | https://space-tours-api.onrender.com/docs |
 | API (base URL) | https://space-tours-api.onrender.com |
 | Frontend (backoffice) | https://stellar-command.onrender.com |
+| Databáza (Neon) — projekt `space-tours-api` | https://console.neon.tech |
+
+### Buggy (buggy-void-terminal branch)
+
+| Služba | URL |
+|--------|-----|
+| API (Swagger UI) | https://space-tours-api-x.onrender.com/docs |
+| API (base URL) | https://space-tours-api-x.onrender.com |
+| Frontend (backoffice) | https://stellar-command-x.onrender.com |
+| Databáza (Neon) — projekt `space-tours-api-x` | https://console.neon.tech |
+
+### Ostatné
+
+| Služba | URL |
+|--------|-----|
 | GitHub | https://github.com/kat-bal/space-tours-api |
-| Databáza (Neon) | https://console.neon.tech |
 
 > ⚠️ Render free tier uspí server po 15 minútach nečinnosti. Prvý request po spánku trvá 30-60 sekúnd.
 
