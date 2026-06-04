@@ -8,6 +8,23 @@
   "item": [
     {
       "name": "Health-Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('API is online', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.status).to.eql('online');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
@@ -17,6 +34,32 @@
     },
     {
       "name": "Get-Destinations",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Returns array of destinations', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.be.an('array');",
+              "    pm.expect(json.length).to.be.above(0);",
+              "});",
+              "pm.test('Each destination has required fields', function () {",
+              "    var json = pm.response.json();",
+              "    json.forEach(function(dest) {",
+              "        pm.expect(dest).to.have.property('name');",
+              "        pm.expect(dest).to.have.property('price_usd');",
+              "        pm.expect(dest).to.have.property('duration_days');",
+              "    });",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
@@ -26,6 +69,32 @@
     },
     {
       "name": "Create-Booking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test('Response contains booking ID', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.have.property('id');",
+              "    pm.collectionVariables.set('booking_id', json.id);",
+              "});",
+              "pm.test('Status is pending', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.status).to.eql('pending');",
+              "});",
+              "pm.test('Destination matches request', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.destination).to.eql('Jupiter');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [],
@@ -44,6 +113,32 @@
     },
     {
       "name": "Get-All-Bookings",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Returns array', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.be.an('array');",
+              "});",
+              "pm.test('Each booking has required fields', function () {",
+              "    var json = pm.response.json();",
+              "    json.forEach(function(booking) {",
+              "        pm.expect(booking).to.have.property('id');",
+              "        pm.expect(booking).to.have.property('passenger_name');",
+              "        pm.expect(booking).to.have.property('destination');",
+              "        pm.expect(booking).to.have.property('status');",
+              "    });",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
@@ -69,6 +164,28 @@
     },
     {
       "name": "Get-Booking-By-ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Returns booking object (not null)', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.not.be.null;",
+              "    pm.expect(json).to.have.property('id');",
+              "});",
+              "pm.test('ID matches requested ID', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.id).to.eql(Number(pm.variables.get('booking_id')));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
@@ -78,6 +195,27 @@
     },
     {
       "name": "Update-Booking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Status was updated to confirmed', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.status).to.eql('confirmed');",
+              "});",
+              "pm.test('ID matches requested ID', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.id).to.eql(Number(pm.variables.get('booking_id')));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "request": {
         "method": "PUT",
         "header": [],
@@ -96,6 +234,24 @@
     },
     {
       "name": "Delete-Booking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response confirms deletion', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.have.property('deleted_id');",
+              "    pm.expect(json.deleted_id).to.eql(Number(pm.variables.get('booking_id')));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
       "request": {
         "method": "DELETE",
         "header": [],
