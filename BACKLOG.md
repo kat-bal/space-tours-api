@@ -19,7 +19,12 @@ _(nič momentálne)_
 - [ ] Zobraziť čas doletu na planétu — vypočítať a zobraziť dĺžku cesty pri výbere destinácie (FE aj API `/destinations`)
 - [ ] Filtrovanie na FE podľa travel class (seat_class)
 - [ ] Výber stravovania a ďalších doplnkov (addons) pri vytváraní objednávky
-- [ ] Jazykové verzie (SK/EN) — Swagger dokumentácia aj Frontend
+- [ ] Jazykové verzie — Swagger dokumentácia aj Frontend
+  - SK / EN ako základ
+  - vymyslený vesmírny jazyk (napr. Galactic Standard, Martian Creole...) — pre zábavu a branding
+- [ ] Generovanie dokumentov pre klienta
+  - Potvrdenie objednávky (booking confirmation) — PDF alebo HTML
+  - Prípadne ďalšie doklady (palubný lístok, itinerár cesty...)
 - [ ] Negative testing scenáre (dokumentácia)
 - [ ] Design Doc — popis funkcionality appky so screenshotmi, slúži ako podklad pre vývoj aj testovanie
 

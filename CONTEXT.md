@@ -163,23 +163,40 @@ Pozri `BACKLOG.md` pre úplný zoznam. Hlavné priority:
 
 ## Práca s Claudom
 
+### Možnosť A — Claude Code (odporúčané)
+
+Claude Code je CLI nástroj, ktorý beží priamo v termináli a má prístup k lokálnym súborom aj GitHubu.
+
+**Predpoklady:**
+- Nainštalovaný Claude Code (`npm install -g @anthropic-ai/claude-code`)
+- Nainštalovaný a prihlásený `gh` CLI (`brew install gh && gh auth login`)
+
+**Workflow:**
+1. Otvor terminál v priečinku `space-tours-api`
+2. Spusti `claude`
+3. Zadaj úlohu — Claude priamo upraví súbory, commitne a pushne
+
+**Čo Claude Code vie robiť samostatne:**
+- Čítať a upravovať všetky projektové súbory
+- Generovať nové funkcie, validácie, endpointy
+- Aktualizovať dokumentáciu
+- `git add`, `git commit`, `git push` — vrátane commit messages
+
+---
+
+### Možnosť B — Claude Desktop (bez prístupu k terminálu)
+
 GitHub repozitár je verejný — Claude si vie stiahnuť aktuálny stav priamo:
 
 ```bash
 git clone https://github.com/kat-bal/space-tours-api.git
 ```
 
-### Workflow
+**Workflow:**
 1. Claude si stiahne repozitár z GitHubu a prečíta aktuálny stav súborov
 2. Upraví súbory podľa zadania
 3. Vygeneruje upravené súbory na stiahnutie
 4. Vyučujúca ich skopíruje do repozitára, commitne a pushne
 
-### Čo Claude vie robiť
-- Čítať a upravovať všetky projektové súbory
-- Generovať nové funkcie, validácie, endpointy
-- Aktualizovať dokumentáciu (CONTEXT.md, BACKLOG.md, README.md)
-- Pripravovať commit messages
-
-### Čo musí urobiť vyučujúca
-- `git add`, `git commit`, `git push` — Claude nemá prístup k credentials
+**Čo musí urobiť vyučujúca:**
+- `git add`, `git commit`, `git push` — Claude Desktop nemá prístup k credentials
