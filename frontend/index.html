@@ -265,6 +265,35 @@
       text-transform: uppercase;
     }
 
+    [data-tooltip] {
+      position: relative;
+    }
+
+    [data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg3);
+      border: 1px solid var(--border-bright);
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      padding: 4px 8px;
+      border-radius: 3px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      z-index: 200;
+    }
+
+    [data-tooltip]:hover::after {
+      opacity: 1;
+    }
+
     .action-btn {
       background: none;
       border: 1px solid var(--border);
@@ -706,17 +735,17 @@
         <div class="td"><span class="status-badge status-${b.status}">${b.status}</span></div>
         <div class="td">
           ${b.status !== 'cancelled'
-            ? `<button class="action-btn" onclick="openEditModal(${b.id})" title="Edit booking details">✎ Edit</button>`
-            : `<button class="action-btn" disabled title="Cancelled bookings cannot be edited">✎ Edit</button>`}
+            ? `<button class="action-btn" onclick="openEditModal(${b.id})" data-tooltip="Edit booking details">✎ Edit</button>`
+            : `<button class="action-btn" disabled data-tooltip="Cancelled bookings cannot be edited">✎ Edit</button>`}
           ${b.status === 'pending'
-            ? `<button class="action-btn" onclick="confirmBooking(${b.id})" title="Confirm booking">✓</button>`
+            ? `<button class="action-btn" onclick="confirmBooking(${b.id})" data-tooltip="Confirm booking">✓</button>`
             : ''}
           ${b.status === 'pending' || b.status === 'confirmed'
-            ? `<button class="action-btn cancel-btn" onclick="cancelBooking(${b.id}, '${b.passenger_name}')" title="Cancel booking">✕</button>`
+            ? `<button class="action-btn cancel-btn" onclick="cancelBooking(${b.id}, '${b.passenger_name}')" data-tooltip="Cancel booking">✕</button>`
             : ''}
           ${b.status === 'cancelled'
-            ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger_name}')" title="Delete booking">🗑</button>`
-            : `<button class="action-btn del" disabled title="Cancel the booking before deleting">🗑</button>`}
+            ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger_name}')" data-tooltip="Delete booking">🗑</button>`
+            : `<button class="action-btn del" disabled data-tooltip="Cancel the booking before deleting">🗑</button>`}
         </div>
       </div>
     `).join('');
