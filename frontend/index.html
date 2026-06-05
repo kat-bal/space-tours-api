@@ -398,6 +398,7 @@
 
     .cs-option:hover { background: rgba(56,189,248,0.08); color: var(--text); }
     .cs-option.selected { color: var(--cyan); }
+    .cs-wrapper > select { display: none !important; }
 
     /* ── Form ── */
     .form-card {
@@ -736,7 +737,7 @@
   // ── Custom Select ────────────────────────────────────────────────────────
   function initSelect(id) {
     const sel = document.getElementById(id);
-    if (!sel) return;
+    if (!sel) { console.error('initSelect: element not found:', id); return; }
 
     const isFull = !!sel.closest('.form-group');
     const wrapper = document.createElement('div');
