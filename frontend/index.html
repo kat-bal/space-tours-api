@@ -706,17 +706,17 @@
         <div class="td"><span class="status-badge status-${b.status}">${b.status}</span></div>
         <div class="td">
           ${b.status !== 'cancelled'
-            ? `<button class="action-btn" onclick="openEditModal(${b.id})">✎ Edit</button>`
+            ? `<button class="action-btn" onclick="openEditModal(${b.id})" title="Edit booking details">✎ Edit</button>`
             : `<button class="action-btn" disabled title="Cancelled bookings cannot be edited">✎ Edit</button>`}
           ${b.status === 'pending'
-            ? `<button class="action-btn" onclick="confirmBooking(${b.id})">✓</button>`
+            ? `<button class="action-btn" onclick="confirmBooking(${b.id})" title="Confirm booking">✓</button>`
             : ''}
           ${b.status === 'pending' || b.status === 'confirmed'
-            ? `<button class="action-btn cancel-btn" onclick="cancelBooking(${b.id}, '${b.passenger_name}')">✕</button>`
+            ? `<button class="action-btn cancel-btn" onclick="cancelBooking(${b.id}, '${b.passenger_name}')" title="Cancel booking">✕</button>`
             : ''}
           ${b.status === 'cancelled'
-            ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger_name}')">🗑</button>`
-            : `<button class="action-btn del" disabled title="Najprv zruš objednávku">🗑</button>`}
+            ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger_name}')" title="Delete booking">🗑</button>`
+            : `<button class="action-btn del" disabled title="Cancel the booking before deleting">🗑</button>`}
         </div>
       </div>
     `).join('');
