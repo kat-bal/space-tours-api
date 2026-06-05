@@ -208,6 +208,8 @@
     .th:hover { color: var(--cyan-dim); }
     .th.sort-active { color: var(--cyan); }
     .th .sort-arrow { margin-left: 4px; font-size: 9px; opacity: 0.7; }
+    .sort-indicator { font-size: 9px; opacity: 0.25; margin-left: 3px; }
+    .th.sort-active .sort-indicator { opacity: 1; }
 
     .table-row {
       display: grid;
@@ -223,7 +225,7 @@
 
     .td { font-size: 13px; color: var(--text); }
     .td-id { font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
-    .td-name { font-weight: 600; font-size: 13px; }
+    .td-name { font-family: var(--mono); font-size: 13px; }
 
     .planet-badge {
       display: inline-block;
@@ -528,19 +530,25 @@
         <option value="">All statuses</option>
         <option>pending</option><option>confirmed</option><option>cancelled</option>
       </select>
+      <select id="filter-class" onchange="loadBookings()">
+        <option value="">All classes</option>
+        <option value="economy">Economy</option>
+        <option value="business">Business</option>
+        <option value="vip">VIP</option>
+      </select>
       <button class="action-btn" onclick="loadBookings()" style="margin-left:auto">↻ Refresh</button>
     </div>
 
     <div class="section-title">Mission Manifest</div>
     <div class="bookings-table">
       <div class="table-header">
-        <div class="th" onclick="sortBy('id')"         id="th-id">ID</div>
-        <div class="th" onclick="sortBy('created_at')" id="th-created_at">Created</div>
-        <div class="th" onclick="sortBy('passenger_name')" id="th-passenger_name">Passenger</div>
-        <div class="th" onclick="sortBy('destination')" id="th-destination">Destination</div>
-        <div class="th" onclick="sortBy('departure_date')" id="th-departure_date">Departure</div>
-        <div class="th" onclick="sortBy('seat_class')"  id="th-seat_class">Class</div>
-        <div class="th" onclick="sortBy('status')"      id="th-status">Status</div>
+        <div class="th" onclick="sortBy('id')"         id="th-id">ID <span class="sort-indicator">↕</span></div>
+        <div class="th" onclick="sortBy('created_at')" id="th-created_at">Created <span class="sort-indicator">↕</span></div>
+        <div class="th" onclick="sortBy('passenger_name')" id="th-passenger_name">Passenger <span class="sort-indicator">↕</span></div>
+        <div class="th" onclick="sortBy('destination')" id="th-destination">Destination <span class="sort-indicator">↕</span></div>
+        <div class="th" onclick="sortBy('departure_date')" id="th-departure_date">Departure <span class="sort-indicator">↕</span></div>
+        <div class="th" onclick="sortBy('seat_class')"  id="th-seat_class">Class <span class="sort-indicator">↕</span></div>
+        <div class="th" onclick="sortBy('status')"      id="th-status">Status <span class="sort-indicator">↕</span></div>
         <div class="th">Actions</div>
       </div>
       <div id="bookings-list">
@@ -659,14 +667,15 @@
     ['id','passenger_name','destination','departure_date','seat_class','status','created_at'].forEach(k => {
       const el = document.getElementById('th-' + k);
       if (!el) return;
-      // strip existing arrow
-      el.textContent = el.textContent.replace(/ [▲▼]$/, '').trim();
       el.classList.remove('sort-active');
+      const span = el.querySelector('.sort-indicator');
+      if (span) span.textContent = '↕';
     });
     const active = document.getElementById('th-' + sortState.key);
     if (active) {
       active.classList.add('sort-active');
-      active.textContent = active.textContent.trim() + ' ' + (sortState.dir === 'asc' ? '▲' : '▼');
+      const span = active.querySelector('.sort-indicator');
+      if (span) span.textContent = sortState.dir === 'asc' ? '▲' : '▼';
     }
   }
 
@@ -688,8 +697,9 @@
   }
 
   async function loadBookings() {
-    const dest   = document.getElementById('filter-dest').value;
-    const status = document.getElementById('filter-status').value;
+    const dest      = document.getElementById('filter-dest').value;
+    const status    = document.getElementById('filter-status').value;
+    const seatClass = document.getElementById('filter-class').value;
     let url = API + '/bookings';
     const params = [];
     if (dest)   params.push('destination=' + encodeURIComponent(dest));
@@ -698,7 +708,8 @@
 
     try {
       const r = await fetch(url);
-      const bookings = await r.json();
+      let bookings = await r.json();
+      if (seatClass) bookings = bookings.filter(b => b.seat_class === seatClass);
       renderBookings(sortBookings(bookings));
       loadStats();
     } catch(e) {
@@ -1069,6 +1080,7 @@
     draw();
   })();
 
+  updateSortHeaders();
   loadBookings();
 </script>
 </body>
