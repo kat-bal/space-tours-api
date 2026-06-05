@@ -13,7 +13,6 @@ _(nič momentálne)_
 - [ ] PUT — čo ak pošleš neplatný status (napr. "status": "flying")?
 
 ## 🟡 Up Next — Funkcionality
-- [ ] Úprava objednávky cez FE — editovací formulár (PUT), zmena poľa priamo z tabuľky
 - [ ] Stránka Destinations — zoznam planét s popisom (vzdialenosť, dĺžka letu, cena)
 - [ ] V destination selectione označiť niektorú planétu ako `disabled` s poznámkou "Tour coming soon"
 - [ ] Zobraziť čas doletu na planétu — vypočítať a zobraziť dĺžku cesty pri výbere destinácie (FE aj API `/destinations`)
@@ -71,6 +70,8 @@ _Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa sta
 - [ ] Frontend pre klientov — verejná stránka oddelená od backoffice (Stellar Command)
 
 ## ✅ Hotovo
+- [x] Tooltips na akčných buttonoch — custom CSS (konzistentné, bez natívneho browser delay)
+- [x] Úprava objednávky cez FE — editovací formulár (PUT), zmena poľa priamo z tabuľky
 - [x] Postman environment variables ({{base_url}}, {{booking_id}})
 - [x] Exportovať Postman kolekciu do repozitára
 - [x] `buggy` branch s úmyselnými bugmi — na výuku testovania
