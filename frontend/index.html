@@ -702,14 +702,14 @@
     const seatClass = document.getElementById('filter-class').value;
     let url = API + '/bookings';
     const params = [];
-    if (dest)   params.push('destination=' + encodeURIComponent(dest));
-    if (status) params.push('status=' + encodeURIComponent(status));
+    if (dest)      params.push('destination=' + encodeURIComponent(dest));
+    if (status)    params.push('status=' + encodeURIComponent(status));
+    if (seatClass) params.push('seat_class=' + encodeURIComponent(seatClass));
     if (params.length) url += '?' + params.join('&');
 
     try {
       const r = await fetch(url);
-      let bookings = await r.json();
-      if (seatClass) bookings = bookings.filter(b => b.seat_class === seatClass);
+      const bookings = await r.json();
       renderBookings(sortBookings(bookings));
       loadStats();
     } catch(e) {

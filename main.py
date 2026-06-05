@@ -122,6 +122,7 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
 def list_bookings(
     destination: Optional[str] = Query(None, description="Filtruj podľa planéty, napr. Mars"),
     status:      Optional[str] = Query(None, description="Filtruj podľa stavu: pending, confirmed, cancelled"),
+    seat_class:  Optional[str] = Query(None, description="Filtruj podľa triedy sedenia: economy, business, vip"),
     db: Session = Depends(get_db),
 ):
     """
@@ -129,12 +130,15 @@ def list_bookings(
 
     - **destination**: zobraz len objednávky na konkrétnu planétu
     - **status**: zobraz len objednávky v danom stave
+    - **seat_class**: zobraz len objednávky v danej triede sedenia
     """
     query = db.query(BookingDB)
     if destination:
         query = query.filter(BookingDB.destination == destination)
     if status:
         query = query.filter(BookingDB.status == status)
+    if seat_class:
+        query = query.filter(BookingDB.seat_class == seat_class)
     return query.all()
 
 
