@@ -537,7 +537,8 @@
         <option value="business">Business</option>
         <option value="vip">VIP</option>
       </select>
-      <button class="action-btn" onclick="loadBookings()" style="margin-left:auto">↻ Refresh</button>
+      <button class="action-btn" onclick="resetFilters()" style="margin-left:auto" data-tooltip="Clear all filters">✕ Reset</button>
+      <button class="action-btn" onclick="loadBookings()" data-tooltip="Reload from API">↻ Refresh</button>
     </div>
 
     <div class="section-title">Mission Manifest</div>
@@ -757,10 +758,17 @@
             : ''}
           ${b.status === 'cancelled'
             ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger_name}')" data-tooltip="Delete booking">🗑</button>`
-            : `<button class="action-btn del" disabled data-tooltip="Cancel the booking before deleting">🗑</button>`}
+            : ''}
         </div>
       </div>
     `).join('');
+  }
+
+  function resetFilters() {
+    document.getElementById('filter-dest').value  = '';
+    document.getElementById('filter-status').value = '';
+    document.getElementById('filter-class').value  = '';
+    loadBookings();
   }
 
   function showTab(tab) {
