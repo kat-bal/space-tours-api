@@ -121,18 +121,26 @@
               "pm.test('Status code is 200', function () {",
               "    pm.response.to.have.status(200);",
               "});",
-              "pm.test('Returns array', function () {",
+              "pm.test('Response has pagination structure', function () {",
               "    var json = pm.response.json();",
-              "    pm.expect(json).to.be.an('array');",
+              "    pm.expect(json).to.have.property('items');",
+              "    pm.expect(json).to.have.property('total');",
+              "    pm.expect(json).to.have.property('page');",
+              "    pm.expect(json).to.have.property('pages');",
+              "    pm.expect(json.items).to.be.an('array');",
               "});",
               "pm.test('Each booking has required fields', function () {",
               "    var json = pm.response.json();",
-              "    json.forEach(function(booking) {",
+              "    json.items.forEach(function(booking) {",
               "        pm.expect(booking).to.have.property('id');",
               "        pm.expect(booking).to.have.property('passenger_name');",
               "        pm.expect(booking).to.have.property('destination');",
               "        pm.expect(booking).to.have.property('status');",
               "    });",
+              "});",
+              "pm.test('Page is 1 by default', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.page).to.eql(1);",
               "});"
             ],
             "type": "text/javascript"
@@ -156,9 +164,79 @@
               "value": "pending",
               "description": "pending, confirmed, cancelled",
               "disabled": true
+            },
+            {
+              "key": "seat_class",
+              "value": "economy",
+              "description": "economy, business, vip",
+              "disabled": true
+            },
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Page number (default: 1)",
+              "disabled": true
+            },
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Items per page (default: 10, max: 100)",
+              "disabled": true
+            },
+            {
+              "key": "sort_by",
+              "value": "id",
+              "description": "id, passenger_name, destination, departure_date, seat_class, status, created_at",
+              "disabled": true
+            },
+            {
+              "key": "sort_dir",
+              "value": "asc",
+              "description": "asc, desc",
+              "disabled": true
             }
           ]
         }
+      },
+      "response": []
+    },
+    {
+      "name": "Get-Booking-Stats",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response has all stat fields', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json).to.have.property('total');",
+              "    pm.expect(json).to.have.property('pending');",
+              "    pm.expect(json).to.have.property('confirmed');",
+              "    pm.expect(json).to.have.property('cancelled');",
+              "});",
+              "pm.test('All values are numbers', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.total).to.be.a('number');",
+              "    pm.expect(json.pending).to.be.a('number');",
+              "    pm.expect(json.confirmed).to.be.a('number');",
+              "    pm.expect(json.cancelled).to.be.a('number');",
+              "});",
+              "pm.test('Total equals sum of statuses', function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.total).to.eql(json.pending + json.confirmed + json.cancelled);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base_url}}/bookings/stats"
       },
       "response": []
     },
