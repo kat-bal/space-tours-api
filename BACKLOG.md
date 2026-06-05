@@ -29,8 +29,6 @@ _(nič momentálne)_
 
 ## 🟢 Nápady / Future
 - [ ] Rozdeliť `passenger_name` na tri samostatné polia: `first_name`, `middle_name` (voliteľné), `last_name` — úprava DB modelu, API aj FE
-- [ ] Pagination (GET /bookings?page=1&limit=10)
-- [ ] Sorting (GET /bookings?sort=departure_date)
 
 ## 🧪 QA / Výuka
 
@@ -70,14 +68,19 @@ _Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa sta
 - [ ] Frontend pre klientov — verejná stránka oddelená od backoffice (Stellar Command)
 
 ## ✅ Hotovo
+- [x] Pagination a server-side sorting (GET /bookings?page=1&limit=10&sort_by=id&sort_dir=asc)
+- [x] Štatistiky objednávok — GET /bookings/stats (total, pending, confirmed, cancelled)
+- [x] Filtrovanie podľa seat_class (FE aj API)
+- [x] Staging prostredie — `-x` Render služby prepnuté na feature branch staging (prod + staging naraz)
+- [x] Postman environments — prod a staging ({{base_url}} sa líši podľa env)
 - [x] Tooltips na akčných buttonoch — custom CSS (konzistentné, bez natívneho browser delay)
 - [x] Úprava objednávky cez FE — editovací formulár (PUT), zmena poľa priamo z tabuľky
 - [x] Postman environment variables ({{base_url}}, {{booking_id}})
 - [x] Exportovať Postman kolekciu do repozitára
 - [x] `buggy` branch s úmyselnými bugmi — na výuku testovania
 - [x] Buggy verzia nasadená na samostatnom prostredí (Render) — dve verzie naraz (stable + buggy)
-  - stable: https://space-tours-api.onrender.com / https://stellar-command.onrender.com
-  - buggy: https://space-tours-api-x.onrender.com / https://stellar-command-x.onrender.com
+  - prod: https://space-tours-api.onrender.com / https://stellar-command.onrender.com
+  - staging: https://space-tours-api-x.onrender.com / https://stellar-command-x.onrender.com
 - [x] FastAPI projekt — lokálne
 - [x] SQLite databáza
 - [x] CRUD endpointy (POST, GET, GET by ID, PUT, DELETE)
