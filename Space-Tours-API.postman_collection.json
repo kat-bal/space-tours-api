@@ -152,6 +152,8 @@
         "header": [],
         "url": {
           "raw": "{{base_url}}/bookings",
+          "host": ["{{base_url}}"],
+          "path": ["bookings"],
           "query": [
             {
               "key": "destination",
