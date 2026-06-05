@@ -556,6 +556,33 @@
       letter-spacing: 1px;
     }
 
+    .pagination-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 16px 0;
+    }
+
+    .page-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.15s;
+      min-width: 32px;
+    }
+
+    .page-btn:hover:not([disabled]) { border-color: var(--cyan); color: var(--cyan); }
+    .page-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(56,189,248,0.08); }
+    .page-btn[disabled] { opacity: 0.25; cursor: not-allowed; }
+    .page-info { font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: 1px; padding: 0 8px; }
+
     .hidden { display: none !important; }
 
     @media (max-width: 768px) {
@@ -606,16 +633,16 @@
 
     <div class="filter-row">
       <span class="filter-label">Filter:</span>
-      <select id="filter-dest" onchange="loadBookings()">
+      <select id="filter-dest" onchange="currentPage=1;loadBookings()">
         <option value="">All destinations</option>
         <option>Mercury</option><option>Venus</option><option>Mars</option>
         <option>Jupiter</option><option>Saturn</option><option>Uranus</option><option>Neptune</option>
       </select>
-      <select id="filter-status" onchange="loadBookings()">
+      <select id="filter-status" onchange="currentPage=1;loadBookings()">
         <option value="">All statuses</option>
         <option>pending</option><option>confirmed</option><option>cancelled</option>
       </select>
-      <select id="filter-class" onchange="loadBookings()">
+      <select id="filter-class" onchange="currentPage=1;loadBookings()">
         <option value="">All classes</option>
         <option value="economy">Economy</option>
         <option value="business">Business</option>
@@ -641,6 +668,8 @@
         <div class="empty-state">Loading missions...</div>
       </div>
     </div>
+
+    <div id="pagination" class="pagination-row hidden"></div>
   </div>
 
   <!-- New booking tab -->
@@ -814,6 +843,10 @@
     document.querySelectorAll('.cs-wrapper.open').forEach(w => w.classList.remove('open'));
   });
 
+  // ── Pagination state ─────────────────────────────────────────────────────
+  let currentPage = 1;
+  const PAGE_LIMIT = 10;
+
   // ── Sorting state ────────────────────────────────────────────────────────
   let sortState = { key: 'id', dir: 'asc' };
 
@@ -827,6 +860,7 @@
       sortState.key = key;
       sortState.dir = 'asc';
     }
+    currentPage = 1;
     updateSortHeaders();
     loadBookings();
   }
@@ -847,38 +881,26 @@
     }
   }
 
-  function sortBookings(bookings) {
-    const { key, dir } = sortState;
-    return [...bookings].sort((a, b) => {
-      let av = a[key], bv = b[key];
-      // custom order for status and seat_class
-      if (key === 'status')     { av = SORT_ORDER[av] ?? 99; bv = SORT_ORDER[bv] ?? 99; }
-      if (key === 'seat_class') { av = CLASS_ORDER[av] ?? 99; bv = CLASS_ORDER[bv] ?? 99; }
-      if (typeof av === 'number' && typeof bv === 'number') {
-        return dir === 'asc' ? av - bv : bv - av;
-      }
-      av = String(av).toLowerCase(); bv = String(bv).toLowerCase();
-      if (av < bv) return dir === 'asc' ? -1 : 1;
-      if (av > bv) return dir === 'asc' ?  1 : -1;
-      return 0;
-    });
-  }
 
   async function loadBookings() {
     const dest      = document.getElementById('filter-dest').value;
     const status    = document.getElementById('filter-status').value;
     const seatClass = document.getElementById('filter-class').value;
-    let url = API + '/bookings';
-    const params = [];
+    const params = [
+      `page=${currentPage}`,
+      `limit=${PAGE_LIMIT}`,
+      `sort_by=${sortState.key}`,
+      `sort_dir=${sortState.dir}`,
+    ];
     if (dest)      params.push('destination=' + encodeURIComponent(dest));
     if (status)    params.push('status=' + encodeURIComponent(status));
     if (seatClass) params.push('seat_class=' + encodeURIComponent(seatClass));
-    if (params.length) url += '?' + params.join('&');
 
     try {
-      const r = await fetch(url);
-      const bookings = await r.json();
-      renderBookings(sortBookings(bookings));
+      const r = await fetch(API + '/bookings?' + params.join('&'));
+      const data = await r.json();
+      renderBookings(data.items);
+      renderPagination(data.page, data.pages, data.total);
       loadStats();
     } catch(e) {
       document.getElementById('bookings-list').innerHTML =
@@ -888,13 +910,41 @@
 
   async function loadStats() {
     try {
-      const r = await fetch(API + '/bookings');
-      const all = await r.json();
-      document.getElementById('stat-total').textContent     = all.length;
-      document.getElementById('stat-pending').textContent   = all.filter(b => b.status === 'pending').length;
-      document.getElementById('stat-confirmed').textContent = all.filter(b => b.status === 'confirmed').length;
-      document.getElementById('stat-cancelled').textContent = all.filter(b => b.status === 'cancelled').length;
+      const r = await fetch(API + '/bookings/stats');
+      const s = await r.json();
+      document.getElementById('stat-total').textContent     = s.total;
+      document.getElementById('stat-pending').textContent   = s.pending;
+      document.getElementById('stat-confirmed').textContent = s.confirmed;
+      document.getElementById('stat-cancelled').textContent = s.cancelled;
     } catch(e) {}
+  }
+
+  function renderPagination(page, pages, total) {
+    const el = document.getElementById('pagination');
+    if (pages <= 1) { el.classList.add('hidden'); return; }
+    el.classList.remove('hidden');
+
+    const start = (page - 1) * PAGE_LIMIT + 1;
+    const end   = Math.min(page * PAGE_LIMIT, total);
+
+    let html = `<button class="page-btn" onclick="goToPage(${page - 1})" ${page === 1 ? 'disabled' : ''}>‹ Prev</button>`;
+
+    for (let i = 1; i <= pages; i++) {
+      if (pages > 7 && Math.abs(i - page) > 2 && i !== 1 && i !== pages) {
+        if (i === 2 || i === pages - 1) html += `<span class="page-info">…</span>`;
+        continue;
+      }
+      html += `<button class="page-btn ${i === page ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+    }
+
+    html += `<button class="page-btn" onclick="goToPage(${page + 1})" ${page === pages ? 'disabled' : ''}>Next ›</button>`;
+    html += `<span class="page-info">${start}–${end} of ${total}</span>`;
+    el.innerHTML = html;
+  }
+
+  function goToPage(page) {
+    currentPage = page;
+    loadBookings();
   }
 
   function renderBookings(bookings) {
@@ -937,6 +987,7 @@
     refreshSelect('filter-dest');
     refreshSelect('filter-status');
     refreshSelect('filter-class');
+    currentPage = 1;
     loadBookings();
   }
 

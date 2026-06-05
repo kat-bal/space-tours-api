@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from database import engine, get_db, Base
-from models import BookingDB, BookingCreate, BookingUpdate, BookingResponse
+from models import BookingDB, BookingCreate, BookingUpdate, BookingResponse, BookingStats, PaginatedBookings
 
 Base.metadata.create_all(bind=engine)
 
@@ -114,27 +114,55 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
     return db_booking
 
 
-# GET /bookings — zoznam všetkých objednávok
+# GET /bookings/stats — štatistiky objednávok
+@app.get(
+    "/bookings/stats",
+    response_model=BookingStats,
+    tags=["Bookings"],
+    summary="Štatistiky objednávok",
+    response_description="Počty objednávok podľa stavu",
+)
+def get_booking_stats(db: Session = Depends(get_db)):
+    """Vráti celkový počet objednávok rozdelený podľa stavu."""
+    total     = db.query(BookingDB).count()
+    pending   = db.query(BookingDB).filter(BookingDB.status == "pending").count()
+    confirmed = db.query(BookingDB).filter(BookingDB.status == "confirmed").count()
+    cancelled = db.query(BookingDB).filter(BookingDB.status == "cancelled").count()
+    return BookingStats(total=total, pending=pending, confirmed=confirmed, cancelled=cancelled)
+
+
+# GET /bookings — stránkovaný zoznam objednávok
 @app.get(
     "/bookings",
-    response_model=List[BookingResponse],
+    response_model=PaginatedBookings,
     tags=["Bookings"],
-    summary="Zoznam všetkých objednávok",
-    response_description="Pole objednávok",
+    summary="Zoznam objednávok",
+    response_description="Stránkovaný zoznam objednávok",
 )
 def list_bookings(
     destination: Optional[str] = Query(None, description="Filtruj podľa planéty, napr. Mars"),
     status:      Optional[str] = Query(None, description="Filtruj podľa stavu: pending, confirmed, cancelled"),
     seat_class:  Optional[str] = Query(None, description="Filtruj podľa triedy sedenia: economy, business, vip"),
+    page:        int           = Query(1,    ge=1, description="Číslo stránky"),
+    limit:       int           = Query(10,   ge=1, le=100, description="Počet položiek na stránku"),
+    sort_by:     Optional[str] = Query("id", description="Zoraď podľa: id, passenger_name, destination, departure_date, seat_class, status, created_at"),
+    sort_dir:    Optional[str] = Query("asc", description="Smer: asc, desc"),
     db: Session = Depends(get_db),
 ):
     """
-    Vráti všetky objednávky. Voliteľne možno filtrovať pomocou query parametrov:
+    Vráti stránkovaný zoznam objednávok. Voliteľné filtre:
 
     - **destination**: zobraz len objednávky na konkrétnu planétu
     - **status**: zobraz len objednávky v danom stave
     - **seat_class**: zobraz len objednávky v danej triede sedenia
+    - **page**: číslo stránky (default: 1)
+    - **limit**: počet položiek na stránku (default: 10, max: 100)
+    - **sort_by**: stĺpec zoradenia (default: id)
+    - **sort_dir**: smer zoradenia asc/desc (default: asc)
     """
+    SORTABLE = {"id", "passenger_name", "destination", "departure_date", "seat_class", "status", "created_at"}
+    sort_column = getattr(BookingDB, sort_by if sort_by in SORTABLE else "id")
+
     query = db.query(BookingDB)
     if destination:
         query = query.filter(BookingDB.destination == destination)
@@ -142,7 +170,14 @@ def list_bookings(
         query = query.filter(BookingDB.status == status)
     if seat_class:
         query = query.filter(BookingDB.seat_class == seat_class)
-    return query.all()
+
+    query = query.order_by(sort_column.desc() if sort_dir == "desc" else sort_column.asc())
+
+    total = query.count()
+    pages = max(1, -(-total // limit))
+    items = query.offset((page - 1) * limit).limit(limit).all()
+
+    return PaginatedBookings(items=items, total=total, page=page, pages=pages)
 
 
 # GET /bookings/{id} — detail jednej objednávky

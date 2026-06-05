@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
 from database import Base
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -49,6 +49,22 @@ class BookingUpdate(BaseModel):
     departure_date: Optional[str] = None
     seat_class:     Optional[str] = None
     status:         Optional[str] = None
+
+
+class BookingStats(BaseModel):
+    """Štatistiky objednávok podľa stavu"""
+    total:     int
+    pending:   int
+    confirmed: int
+    cancelled: int
+
+
+class PaginatedBookings(BaseModel):
+    """Stránkovaný zoznam objednávok"""
+    items: List['BookingResponse']
+    total: int
+    page:  int
+    pages: int
 
 
 class BookingResponse(BaseModel):
