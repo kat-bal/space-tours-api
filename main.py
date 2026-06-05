@@ -36,7 +36,10 @@ Pomocou tohto API môžeš:
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://stellar-command.onrender.com"],
+    allow_origins=[
+        "https://stellar-command.onrender.com",
+        "https://stellar-command-x.onrender.com",
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -646,7 +646,9 @@
 <div id="toast" class="toast"></div>
 
 <script>
-  const API = 'https://space-tours-api.onrender.com';
+  const API = window.location.hostname.includes('-x')
+    ? 'https://space-tours-api-x.onrender.com'
+    : 'https://space-tours-api.onrender.com';
 
   // ── Sorting state ────────────────────────────────────────────────────────
   let sortState = { key: 'id', dir: 'asc' };
