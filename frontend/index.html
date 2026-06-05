@@ -205,7 +205,8 @@
       user-select: none;
       transition: color 0.15s;
     }
-    .th:hover { color: var(--cyan-dim); }
+    .th:not(.th-static):hover { color: var(--cyan-dim); }
+    .th.th-static { cursor: default; }
     .th.sort-active { color: var(--cyan); }
     .th .sort-arrow { margin-left: 4px; font-size: 9px; opacity: 0.7; }
     .sort-indicator { font-size: 9px; opacity: 0.25; margin-left: 3px; }
@@ -549,7 +550,7 @@
         <div class="th" onclick="sortBy('departure_date')" id="th-departure_date">Departure <span class="sort-indicator">↕</span></div>
         <div class="th" onclick="sortBy('seat_class')"  id="th-seat_class">Class <span class="sort-indicator">↕</span></div>
         <div class="th" onclick="sortBy('status')"      id="th-status">Status <span class="sort-indicator">↕</span></div>
-        <div class="th">Actions</div>
+        <div class="th th-static">Actions</div>
       </div>
       <div id="bookings-list">
         <div class="empty-state">Loading missions...</div>
