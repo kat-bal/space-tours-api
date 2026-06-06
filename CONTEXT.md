@@ -25,7 +25,7 @@ Téma: objednávkový systém zájazdov na planéty slnečnej sústavy.
 | Frontend (backoffice) | https://stellar-command.onrender.com |
 | Databáza (Neon) — projekt `space-tours-api` | https://console.neon.tech |
 
-### Buggy (buggy-void-terminal branch)
+### Staging / Buggy (buggy-void-terminal branch)
 
 | Služba | URL |
 |--------|-----|
@@ -69,10 +69,10 @@ space-tours-api/
 ├── .env              # Lokálne env premenné — nie je v gite!
 ├── frontend/
 │   ├── index.html    # Stellar Command backoffice UI
-│   ├── favicon.ico
-│   ├── favicon-32x32.png
-│   ├── favicon-180x180.png
-│   └── favicon-192x192.png
+│   ├── favicon16.png
+│   ├── favicon32.png
+│   ├── favicon180.png
+│   └── favicon512.png
 ├── BACKLOG.md        # Backlog projektu
 ├── CONTEXT.md        # Tento súbor
 └── README.md         # Inštrukcie pre spustenie
@@ -88,14 +88,22 @@ space-tours-api/
 | GET | `/destinations` | Zoznam planét |
 | POST | `/bookings` | Nová objednávka |
 | GET | `/bookings` | Všetky objednávky (+ filtre) |
+| GET | `/bookings/stats` | Štatistiky (total, pending, confirmed, cancelled) |
 | GET | `/bookings/{id}` | Detail objednávky |
 | PUT | `/bookings/{id}` | Úprava objednávky |
 | DELETE | `/bookings/{id}` | Zmazanie objednávky |
 
 ### Query parametre pre GET /bookings
-- `destination` — napr. `?destination=Mars`
-- `status` — napr. `?status=pending`
-- Kombinovateľné: `?destination=Mars&status=confirmed`
+
+| Parameter | Popis | Príklad |
+|-----------|-------|---------|
+| `destination` | Filter podľa planéty | `?destination=Mars` |
+| `status` | Filter podľa stavu | `?status=pending` |
+| `seat_class` | Filter podľa triedy sedenia | `?seat_class=vip` |
+| `page` | Číslo stránky (default: 1) | `?page=2` |
+| `limit` | Počet výsledkov na stránku (default: 10) | `?limit=5` |
+| `sort_by` | Pole na zoradenie | `?sort_by=departure_date` |
+| `sort_dir` | Smer zoradenia: `asc` / `desc` | `?sort_dir=desc` |
 
 ---
 
@@ -103,7 +111,8 @@ space-tours-api/
 
 | Pole | Typ | Povinné | Default | Možné hodnoty |
 |------|-----|---------|---------|---------------|
-| `passenger_name` | string | áno | — | ľubovoľný text |
+| `passenger.first_name` | string | áno | — | ľubovoľný text |
+| `passenger.last_name` | string | áno | — | ľubovoľný text |
 | `destination` | string | áno | — | Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune |
 | `departure_date` | string | áno | — | YYYY-MM-DD |
 | `seat_class` | string | nie | economy | economy, business, vip |
@@ -150,7 +159,7 @@ Swagger: http://localhost:8000/docs
 ## Nástroje
 
 - **Swagger UI** — interaktívna dokumentácia, ideálna pre začiatočníkov
-- **Postman** — kolekcia uložená lokálne (TODO: exportovať do repozitára)
+- **Postman** — kolekcia uložená v repozitári (`Space-Tours-API.postman_collection.json`)
 - **Neon SQL Editor** — priamy prístup do databázy cez browser
 
 ---
