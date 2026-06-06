@@ -34,6 +34,7 @@ Swagger dokumentácia: **http://localhost:8000/docs**
 | GET | `/destinations` | Zoznam planét |
 | POST | `/bookings` | Nová objednávka |
 | GET | `/bookings` | Všetky objednávky |
+| GET | `/bookings/stats` | Štatistiky (total, pending, confirmed, cancelled) |
 | GET | `/bookings/{id}` | Detail objednávky |
 | PUT | `/bookings/{id}` | Uprav objednávku |
 | DELETE | `/bookings/{id}` | Zmaž objednávku |
