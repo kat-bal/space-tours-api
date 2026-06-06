@@ -1,13 +1,56 @@
 {
   "info": {
-    "_postman_id": "neg-tests-v1-space-tours",
-    "name": "Space-Tours-API — Negative Tests",
+    "_postman_id": "func-tests-v1-space-tours",
+    "name": "Space-Tours-API — Functional Tests",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "POST /bookings — Validation",
+      "name": "POST /bookings",
       "item": [
+        {
+          "name": "Create booking — valid request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Response contains booking ID', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('id');",
+                  "    pm.environment.set('func_booking_id', json.id);",
+                  "});",
+                  "pm.test('Status is pending', function () {",
+                  "    pm.expect(pm.response.json().status).to.eql('pending');",
+                  "});",
+                  "pm.test('Passenger data matches request', function () {",
+                  "    var p = pm.response.json().passenger;",
+                  "    pm.expect(p.first_name).to.eql('Yuri');",
+                  "    pm.expect(p.last_name).to.eql('Gagarin');",
+                  "});",
+                  "pm.test('Destination matches request', function () {",
+                  "    pm.expect(pm.response.json().destination).to.eql('Mars');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Yuri\", \"last_name\": \"Gagarin\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"business\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
         {
           "name": "NEG-01 departure_date — text string (banana)",
           "event": [
@@ -402,8 +445,105 @@
       ]
     },
     {
-      "name": "GET /bookings — Filters",
+      "name": "GET /bookings",
       "item": [
+        {
+          "name": "Get all bookings — default pagination",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response has pagination structure', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('items');",
+                  "    pm.expect(json).to.have.property('total');",
+                  "    pm.expect(json).to.have.property('page');",
+                  "    pm.expect(json).to.have.property('pages');",
+                  "    pm.expect(json.items).to.be.an('array');",
+                  "});",
+                  "pm.test('Page is 1 by default', function () {",
+                  "    pm.expect(pm.response.json().page).to.eql(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by status=pending",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('All returned items have status pending', function () {",
+                  "    pm.response.json().items.forEach(function (b) {",
+                  "        pm.expect(b.status).to.eql('pending');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bookings?status=pending",
+              "host": ["{{base_url}}"],
+              "path": ["bookings"],
+              "query": [{ "key": "status", "value": "pending" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by destination=Mars",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('All returned items have destination Mars', function () {",
+                  "    pm.response.json().items.forEach(function (b) {",
+                  "        pm.expect(b.destination).to.eql('Mars');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bookings?destination=Mars",
+              "host": ["{{base_url}}"],
+              "path": ["bookings"],
+              "query": [{ "key": "destination", "value": "Mars" }]
+            }
+          },
+          "response": []
+        },
         {
           "name": "NEG-13 status filter — uppercase Pending (case-sensitive bug)",
           "event": [
@@ -525,6 +665,62 @@
       "name": "GET /bookings — {id}",
       "item": [
         {
+          "name": "Get booking by ID — existing booking",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get('base_url') + '/bookings',",
+                  "    method: 'POST',",
+                  "    header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            passenger: { first_name: 'Neil', last_name: 'Armstrong' },",
+                  "            destination: 'Jupiter',",
+                  "            departure_date: '2029-07-20',",
+                  "            seat_class: 'vip'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    pm.environment.set('func_get_id', res.json().id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('ID matches requested ID', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.eql(Number(pm.environment.get('func_get_id')));",
+                  "});",
+                  "pm.test('Response has required fields', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('passenger');",
+                  "    pm.expect(json).to.have.property('destination');",
+                  "    pm.expect(json).to.have.property('status');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/bookings/{{func_get_id}}"
+          },
+          "response": []
+        },
+        {
           "name": "NEG-17 non-existent ID (99999)",
           "event": [
             {
@@ -598,6 +794,90 @@
     {
       "name": "PUT /bookings — {id}",
       "item": [
+        {
+          "name": "Update booking — pending → confirmed",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get('base_url') + '/bookings',",
+                  "    method: 'POST',",
+                  "    header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            passenger: { first_name: 'Sally', last_name: 'Ride' },",
+                  "            destination: 'Saturn',",
+                  "            departure_date: '2029-06-18',",
+                  "            seat_class: 'business'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    pm.environment.set('func_put_id', res.json().id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Status updated to confirmed', function () {",
+                  "    pm.expect(pm.response.json().status).to.eql('confirmed');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings/{{func_put_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Update booking — confirmed → cancelled",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Status updated to cancelled', function () {",
+                  "    pm.expect(pm.response.json().status).to.eql('cancelled');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings/{{func_put_id}}"
+          },
+          "response": []
+        },
         {
           "name": "NEG-20 invalid status value (flying)",
           "event": [
@@ -830,6 +1110,67 @@
     {
       "name": "DELETE /bookings — {id}",
       "item": [
+        {
+          "name": "Delete booking — cancelled status",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.environment.get('base_url');",
+                  "",
+                  "pm.sendRequest({",
+                  "    url: baseUrl + '/bookings',",
+                  "    method: 'POST',",
+                  "    header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            passenger: { first_name: 'Valentina', last_name: 'Tereshkova' },",
+                  "            destination: 'Uranus',",
+                  "            departure_date: '2029-06-16',",
+                  "            seat_class: 'vip'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    var id = res.json().id;",
+                  "    pm.sendRequest({",
+                  "        url: baseUrl + '/bookings/' + id,",
+                  "        method: 'PUT',",
+                  "        header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "        body: { mode: 'raw', raw: JSON.stringify({ status: 'cancelled' }) }",
+                  "    }, function (err2, res2) {",
+                  "        pm.environment.set('func_del_id', id);",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response confirms deletion with correct ID', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('deleted_id');",
+                  "    pm.expect(json.deleted_id).to.eql(Number(pm.environment.get('func_del_id')));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/bookings/{{func_del_id}}"
+          },
+          "response": []
+        },
         {
           "name": "NEG-25 delete booking in pending status",
           "event": [
