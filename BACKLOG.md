@@ -1,8 +1,7 @@
 # 🪐 Space Tours API — Backlog
 
 ## 🔴 In Progress
-- [ ] Negative testy v Postmane
-- [ ] Pytest
+- [ ] Postman / Newman — automatizované spúšťanie Postman kolekcií v CI
 - [ ] GitHub Actions CI
 
 ## 🟡 Up Next — Validácie (známe bugy, ideálne pre junior testerky)
@@ -48,7 +47,6 @@ _Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa sta
 - [ ] Pytest — automatizované testy pre FastAPI endpointy
 - [ ] GitHub Actions CI — automatické spúšťanie testov pri každom push
 - [ ] Playwright — end-to-end testy pre Stellar Command FE (Python knižnica, Page Object Model)
-- [ ] Postman / Newman — automatizované spúšťanie Postman kolekcií v CI
 - [ ] Load testing — Locust (Python), simulácia záťaže na endpointy
 - [ ] Contract testing — Pact, overenie že FE a API sa zhodujú na formáte dát
 
@@ -71,6 +69,7 @@ _Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa sta
 - [ ] Booking detail page — klik na meno pasažiera otvorí /#/bookings/{id} s read-only info, akciami (Confirm/Cancel/Delete) a editovacím formulárom (PUT)
 
 ## ✅ Hotovo
+- [x] Kompletné funkcionálne Postman testy + dokumentácia
 - [x] Rozdeliť `passenger_name` na dve samostatné polia: `first_name`, `last_name` — úprava DB modelu, API aj FE
 - [x] Pagination a server-side sorting (GET /bookings?page=1&limit=10&sort_by=id&sort_dir=asc)
 - [x] Štatistiky objednávok — GET /bookings/stats (total, pending, confirmed, cancelled)

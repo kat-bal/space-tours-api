@@ -654,18 +654,14 @@
           "response": []
         },
         {
-          "name": "TC-018 status filter — uppercase Pending (case-sensitive bug)",
+          "name": "TC-018 status filter — uppercase Pending (invalid value)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Returns results — filter is case-insensitive', function () {",
-                  "    var json = pm.response.json();",
-                  "    pm.expect(json.items.length).to.be.above(0);",
+                  "pm.test('Status is 400 Bad Request', function () {",
+                  "    pm.response.to.have.status(400);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -700,11 +696,8 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Status is 200', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('No items returned for invalid status value', function () {",
-                  "    pm.expect(pm.response.json().items.length).to.eql(0);",
+                  "pm.test('Status is 400 Bad Request', function () {",
+                  "    pm.response.to.have.status(400);",
                   "});"
                 ],
                 "type": "text/javascript"

@@ -1,0 +1,38 @@
+﻿TC ID,Folder,Test Name,Type,Expected Result
+TC-001,GET /destinations,Get all destinations,Positive,200 OK
+TC-002,POST /bookings,Create booking — valid request,Positive,201 Created
+TC-003,POST /bookings,departure_date — text string (banana),Negative,422 Unprocessable Entity
+TC-004,POST /bookings,departure_date — wrong format (DD/MM/YYYY),Negative,422 Unprocessable Entity
+TC-005,POST /bookings,departure_date — date in the past,Negative,422 Unprocessable Entity
+TC-006,POST /bookings,passenger first_name — too short (1 char),Negative,422 Unprocessable Entity
+TC-007,POST /bookings,passenger first_name — too long (300 chars),Negative,422 Unprocessable Entity
+TC-008,POST /bookings,"destination — invalid value (Pluto, poor guy)",Negative,422 Unprocessable Entity
+TC-009,POST /bookings,seat_class — invalid value (premium),Negative,422 Unprocessable Entity
+TC-010,POST /bookings,missing required field — destination,Negative,422 Unprocessable Entity
+TC-011,POST /bookings,missing required field — departure_date,Negative,422 Unprocessable Entity
+TC-012,POST /bookings,empty request body,Negative,422 Unprocessable Entity
+TC-013,POST /bookings,unknown extra field (colour: red),Positive,200 OK or 201 Created
+TC-014,POST /bookings,duplicate booking (same passenger + destination + date),Negative,409 Conflict
+TC-015,GET /bookings,Get all bookings — default pagination,Positive,200 OK
+TC-016,GET /bookings,Filter by status=pending,Positive,200 OK
+TC-017,GET /bookings,Filter by destination=Mars,Positive,200 OK
+TC-018,GET /bookings,status filter — uppercase Pending (invalid value),Negative,400 Bad Request
+TC-019,GET /bookings,status filter — invalid value (flying),Negative,400 Bad Request
+TC-020,GET /bookings,pagination — page=0 (below minimum),Negative,422 Unprocessable Entity
+TC-021,GET /bookings,"pagination — limit=101 (boundary, above maximum of 100)",Negative,422 Unprocessable Entity
+TC-022,GET /bookings/stats,Get booking stats,Positive,200 OK
+TC-023,GET /bookings — {id},Get booking by ID — existing booking,Positive,200 OK
+TC-024,GET /bookings — {id},non-existent ID (99999),Negative,404 Not Found
+TC-025,GET /bookings — {id},negative ID (-1),Negative,404 Not Found or 422 Unprocessable Entity
+TC-026,GET /bookings — {id},string ID (abc),Negative,422 Unprocessable Entity
+TC-027,PUT /bookings — {id},Update booking — pending → confirmed,Positive,200 OK
+TC-028,PUT /bookings — {id},Update booking — confirmed → cancelled,Positive,200 OK
+TC-029,PUT /bookings — {id},invalid status value (flying),Negative,422 Unprocessable Entity
+TC-030,PUT /bookings — {id},status transition — cancelled → pending,Negative,422 Unprocessable Entity
+TC-031,PUT /bookings — {id},status transition — cancelled → confirmed,Negative,422 Unprocessable Entity
+TC-032,PUT /bookings — {id},non-existent ID (99999),Negative,404 Not Found
+TC-033,PUT /bookings — {id},string ID (abc),Negative,422 Unprocessable Entity
+TC-034,DELETE /bookings — {id},Delete booking — cancelled status,Positive,200 OK
+TC-035,DELETE /bookings — {id},delete booking in pending status,Negative,422 Unprocessable Entity
+TC-036,DELETE /bookings — {id},delete booking in confirmed status,Negative,422 Unprocessable Entity
+TC-037,DELETE /bookings — {id},non-existent ID (99999),Negative,404 Not Found
