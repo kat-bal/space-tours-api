@@ -1,7 +1,9 @@
 # 🪐 Space Tours API — Backlog
 
 ## 🔴 In Progress
-_(nič momentálne)_
+- [ ] Negative testy v Postmane
+- [ ] Pytest
+- [ ] GitHub Actions CI
 
 ## 🟡 Up Next — Validácie (známe bugy, ideálne pre junior testerky)
 - [ ] `departure_date` — nemožno zadať dátum v minulosti
@@ -13,10 +15,8 @@ _(nič momentálne)_
 - [ ] PUT — čo ak pošleš neplatný status (napr. "status": "flying")?
 
 ## 🟡 Up Next — Funkcionality
-- [ ] Stránka Destinations — zoznam planét s popisom (vzdialenosť, dĺžka letu, cena)
 - [ ] V destination selectione označiť niektorú planétu ako `disabled` s poznámkou "Tour coming soon"
 - [ ] Zobraziť čas doletu na planétu — vypočítať a zobraziť dĺžku cesty pri výbere destinácie (FE aj API `/destinations`)
-- [ ] Filtrovanie na FE podľa travel class (seat_class)
 - [ ] Výber stravovania a ďalších doplnkov (addons) pri vytváraní objednávky
 - [ ] Jazykové verzie — Swagger dokumentácia aj Frontend
   - SK / EN ako základ
@@ -27,11 +27,10 @@ _(nič momentálne)_
 - [ ] Client-facing FE — verejná stránka pre zákazníkov (oddelená od Stellar Command backoffice)
   - `source` pole na bookingu (`"backoffice"` / `"web"` / atď.) — non-breaking, škáluje na ľubovoľný kanál
   - Záložka **Leads** v Stellar Command — prichádzajúce bookings z klientského FE, kým ich backoffice nespracuje
-- [ ] Negative testing scenáre (dokumentácia) - aktuálne jeden negative test v Postman kolekcii
 - [ ] Design Doc — popis funkcionality appky so screenshotmi, slúži ako podklad pre vývoj aj testovanie
 
 ## 🟢 Nápady / Future
-- [ ] Rozdeliť `passenger_name` na tri samostatné polia: `first_name`, `middle_name` (voliteľné), `last_name` — úprava DB modelu, API aj FE
+- [ ] Pridať `middle_name` voliteľné pole do `passenger_name` — úprava DB modelu, API aj FE
 
 ## 🧪 QA / Výuka
 
@@ -64,13 +63,15 @@ _Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa sta
 - [ ] Docker — zabaliť appku do kontajnera
 - [ ] Environment management — `.env`, secrets, dev/staging/prod rozdiel
 - [ ] Monitoring — Sentry pre error tracking a alerting
-- [ ] Staging prostredie — druhý branch (`develop`) nasadený na samostatných Render službách (2× BE, 2× FE, 2× DB)
 - [ ] Semantic versioning — `MAJOR.MINOR.PATCH`, GitHub releases pri väčších nasadeniach
 
 ### Frontend
 - [ ] Frontend pre klientov — verejná stránka oddelená od backoffice (Stellar Command)
+- [ ] Stránka Destinations — zoznam planét s popisom (vzdialenosť, dĺžka letu, cena)
+- [ ] Booking detail page — klik na meno pasažiera otvorí /#/bookings/{id} s read-only info, akciami (Confirm/Cancel/Delete) a editovacím formulárom (PUT)
 
 ## ✅ Hotovo
+- [x] Rozdeliť `passenger_name` na dve samostatné polia: `first_name`, `last_name` — úprava DB modelu, API aj FE
 - [x] Pagination a server-side sorting (GET /bookings?page=1&limit=10&sort_by=id&sort_dir=asc)
 - [x] Štatistiky objednávok — GET /bookings/stats (total, pending, confirmed, cancelled)
 - [x] Filtrovanie podľa seat_class (FE aj API)
@@ -82,6 +83,7 @@ _Dlhodobé nápady — zaujímavé, ale bez konkrétneho termínu. Môžu sa sta
 - [x] Exportovať Postman kolekciu do repozitára
 - [x] `buggy` branch s úmyselnými bugmi — na výuku testovania
 - [x] Buggy verzia nasadená na samostatnom prostredí (Render) — dve verzie naraz (stable + buggy)
+- [x] Staging prostredie — druhý branch (`develop`) nasadený na samostatných Render službách (2× BE, 2× FE, 2× DB)
   - prod: https://space-tours-api.onrender.com / https://stellar-command.onrender.com
   - staging: https://space-tours-api-x.onrender.com / https://stellar-command-x.onrender.com
 - [x] FastAPI projekt — lokálne
