@@ -189,7 +189,7 @@
 
     .table-header {
       display: grid;
-      grid-template-columns: 48px 90px 1fr 120px 110px 90px 100px 150px;
+      grid-template-columns: 48px 90px 1fr 1fr 120px 110px 90px 100px 110px;
       padding: 10px 16px;
       border-bottom: 1px solid var(--border);
       background: var(--bg3);
@@ -214,7 +214,7 @@
 
     .table-row {
       display: grid;
-      grid-template-columns: 48px 90px 1fr 120px 110px 90px 100px 150px;
+      grid-template-columns: 48px 90px 1fr 1fr 120px 110px 90px 100px 110px;
       padding: 12px 16px;
       border-bottom: 1px solid var(--border);
       align-items: center;
@@ -588,8 +588,8 @@
     @media (max-width: 768px) {
       .stats-row { grid-template-columns: repeat(2, 1fr); }
       .table-header, .table-row { grid-template-columns: 40px 1fr 90px 80px; }
-      .th:nth-child(4), .th:nth-child(5), .th:nth-child(6), .th:nth-child(7),
-      .td:nth-child(4), .td:nth-child(5), .td:nth-child(6), .td:nth-child(7) { display: none; }
+      .th:nth-child(2), .th:nth-child(4), .th:nth-child(5), .th:nth-child(6), .th:nth-child(7),
+      .td:nth-child(2), .td:nth-child(4), .td:nth-child(5), .td:nth-child(6), .td:nth-child(7) { display: none; }
       .form-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -657,7 +657,8 @@
       <div class="table-header">
         <div class="th" onclick="sortBy('id')"         id="th-id">ID <span class="sort-indicator">↕</span></div>
         <div class="th" onclick="sortBy('created_at')" id="th-created_at">Created <span class="sort-indicator">↕</span></div>
-        <div class="th" onclick="sortBy('passenger_name')" id="th-passenger_name">Passenger <span class="sort-indicator">↕</span></div>
+        <div class="th" onclick="sortBy('passenger_first_name')" id="th-passenger_first_name">First Name <span class="sort-indicator">↕</span></div>
+        <div class="th" onclick="sortBy('passenger_last_name')"  id="th-passenger_last_name">Last Name <span class="sort-indicator">↕</span></div>
         <div class="th" onclick="sortBy('destination')" id="th-destination">Destination <span class="sort-indicator">↕</span></div>
         <div class="th" onclick="sortBy('departure_date')" id="th-departure_date">Departure <span class="sort-indicator">↕</span></div>
         <div class="th" onclick="sortBy('seat_class')"  id="th-seat_class">Class <span class="sort-indicator">↕</span></div>
@@ -678,8 +679,12 @@
     <div class="form-card">
       <div class="form-grid">
         <div class="form-group">
-          <label>Passenger Name</label>
-          <input type="text" id="f-name" placeholder="Full name">
+          <label>First Name</label>
+          <input type="text" id="f-first-name" placeholder="First name">
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" id="f-last-name" placeholder="Last name">
         </div>
         <div class="form-group">
           <label>Destination</label>
@@ -726,8 +731,12 @@
     <div class="modal-title">Edit Booking</div>
     <div class="form-grid" style="margin-bottom:16px">
       <div class="form-group">
-        <label>Passenger Name</label>
-        <input type="text" id="edit-name" placeholder="Full name">
+        <label>First Name</label>
+        <input type="text" id="edit-first-name" placeholder="First name">
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" id="edit-last-name" placeholder="Last name">
       </div>
       <div class="form-group">
         <label>Destination</label>
@@ -866,7 +875,7 @@
   }
 
   function updateSortHeaders() {
-    ['id','passenger_name','destination','departure_date','seat_class','status','created_at'].forEach(k => {
+    ['id','passenger_first_name','passenger_last_name','destination','departure_date','seat_class','status','created_at'].forEach(k => {
       const el = document.getElementById('th-' + k);
       if (!el) return;
       el.classList.remove('sort-active');
@@ -957,7 +966,8 @@
       <div class="table-row">
         <div class="td td-id">#${b.id}</div>
         <div class="td" style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">${b.created_at ? b.created_at.slice(0,10) : '—'}</div>
-        <div class="td td-name">${b.passenger_name}</div>
+        <div class="td td-name">${b.passenger.first_name}</div>
+        <div class="td td-name">${b.passenger.last_name}</div>
         <div class="td"><span class="planet-badge planet-${b.destination}">${b.destination}</span></div>
         <div class="td" style="font-family:var(--mono);font-size:12px;color:var(--text-dim)">${b.departure_date}</div>
         <div class="td"><span class="seat-badge">${b.seat_class}</span></div>
@@ -970,10 +980,10 @@
             ? `<button class="action-btn" onclick="confirmBooking(${b.id})" data-tooltip="Confirm booking">✓</button>`
             : ''}
           ${b.status === 'pending' || b.status === 'confirmed'
-            ? `<button class="action-btn cancel-btn" onclick="cancelBooking(${b.id}, '${b.passenger_name}')" data-tooltip="Cancel booking">✕</button>`
+            ? `<button class="action-btn cancel-btn" onclick="cancelBooking(${b.id}, '${b.passenger.first_name} ${b.passenger.last_name}')" data-tooltip="Cancel booking">✕</button>`
             : ''}
           ${b.status === 'cancelled'
-            ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger_name}')" data-tooltip="Delete booking">🗑</button>`
+            ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger.first_name} ${b.passenger.last_name}')" data-tooltip="Delete booking">🗑</button>`
             : ''}
         </div>
       </div>
@@ -1002,18 +1012,19 @@
   }
 
   async function createBooking() {
-    const name = document.getElementById('f-name').value.trim();
-    const dest  = document.getElementById('f-dest').value;
-    const date  = document.getElementById('f-date').value;
-    const cls   = document.getElementById('f-class').value;
+    const firstName = document.getElementById('f-first-name').value.trim();
+    const lastName  = document.getElementById('f-last-name').value.trim();
+    const dest      = document.getElementById('f-dest').value;
+    const date      = document.getElementById('f-date').value;
+    const cls       = document.getElementById('f-class').value;
 
-    if (!name || !dest || !date) { showToast('All fields required', true); return; }
+    if (!firstName || !lastName || !dest || !date) { showToast('All fields required', true); return; }
 
     try {
       const r = await fetch(API + '/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passenger_name: name, destination: dest, departure_date: date, seat_class: cls })
+        body: JSON.stringify({ passenger: { first_name: firstName, last_name: lastName }, destination: dest, departure_date: date, seat_class: cls })
       });
       if (r.ok) {
         showToast('Mission booked successfully');
@@ -1077,7 +1088,8 @@
       const r = await fetch(API + '/bookings/' + id);
       const b = await r.json();
 
-      document.getElementById('edit-name').value  = b.passenger_name;
+      document.getElementById('edit-first-name').value = b.passenger.first_name;
+      document.getElementById('edit-last-name').value  = b.passenger.last_name;
       document.getElementById('edit-dest').value  = b.destination;
       document.getElementById('edit-date').value  = b.departure_date;
       document.getElementById('edit-class').value = b.seat_class;
@@ -1093,7 +1105,10 @@
 
   async function saveEdit(id) {
     const body = {
-      passenger_name: document.getElementById('edit-name').value.trim(),
+      passenger: {
+        first_name: document.getElementById('edit-first-name').value.trim(),
+        last_name:  document.getElementById('edit-last-name').value.trim(),
+      },
       destination:    document.getElementById('edit-dest').value,
       departure_date: document.getElementById('edit-date').value,
       seat_class:     document.getElementById('edit-class').value,

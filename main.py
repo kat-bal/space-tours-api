@@ -88,7 +88,8 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
     """
     Vytvorí novú objednávku miesta na vesmírnej lodi.
 
-    - **passenger_name**: meno a priezvisko cestujúceho
+    - **passenger.first_name**: krstné meno cestujúceho
+    - **passenger.last_name**: priezvisko cestujúceho
     - **destination**: cieľová planéta (napr. Mars)
     - **departure_date**: dátum odletu vo formáte YYYY-MM-DD
     - **seat_class**: trieda sedenia (economy / business / vip)
@@ -107,7 +108,13 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
             detail="Neplatná trieda sedenia. Dostupné: economy, business, vip"
         )
 
-    db_booking = BookingDB(**booking.model_dump())
+    db_booking = BookingDB(
+        passenger_first_name=booking.passenger.first_name,
+        passenger_last_name=booking.passenger.last_name,
+        destination=booking.destination,
+        departure_date=booking.departure_date,
+        seat_class=booking.seat_class,
+    )
     db.add(db_booking)
     db.commit()
     db.refresh(db_booking)
@@ -145,7 +152,7 @@ def list_bookings(
     seat_class:  Optional[str] = Query(None, description="Filtruj podľa triedy sedenia: economy, business, vip"),
     page:        int           = Query(1,    ge=1, description="Číslo stránky"),
     limit:       int           = Query(10,   ge=1, le=100, description="Počet položiek na stránku"),
-    sort_by:     Optional[str] = Query("id", description="Zoraď podľa: id, passenger_name, destination, departure_date, seat_class, status, created_at"),
+    sort_by:     Optional[str] = Query("id", description="Zoraď podľa: id, passenger_first_name, passenger_last_name, destination, departure_date, seat_class, status, created_at"),
     sort_dir:    Optional[str] = Query("asc", description="Smer: asc, desc"),
     db: Session = Depends(get_db),
 ):
@@ -160,7 +167,7 @@ def list_bookings(
     - **sort_by**: stĺpec zoradenia (default: id)
     - **sort_dir**: smer zoradenia asc/desc (default: asc)
     """
-    SORTABLE = {"id", "passenger_name", "destination", "departure_date", "seat_class", "status", "created_at"}
+    SORTABLE = {"id", "passenger_first_name", "passenger_last_name", "destination", "departure_date", "seat_class", "status", "created_at"}
     sort_column = getattr(BookingDB, sort_by if sort_by in SORTABLE else "id")
 
     query = db.query(BookingDB)
@@ -236,6 +243,12 @@ def update_booking(booking_id: int, updates: BookingUpdate, db: Session = Depend
         raise HTTPException(status_code=404, detail=f"Objednávka s ID {booking_id} neexistuje")
 
     update_data = updates.model_dump(exclude_unset=True)  # len polia ktoré prišli v requeste
+
+    # Rozlož nested passenger objekt na flat DB stĺpce
+    if "passenger" in update_data:
+        passenger = update_data.pop("passenger")
+        update_data["passenger_first_name"] = passenger["first_name"]
+        update_data["passenger_last_name"]  = passenger["last_name"]
 
     # Validácia prechodu stavu
     if "status" in update_data:
