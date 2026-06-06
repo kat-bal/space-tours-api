@@ -1,0 +1,928 @@
+{
+  "info": {
+    "_postman_id": "neg-tests-v1-space-tours",
+    "name": "Space-Tours-API — Negative Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "POST /bookings — Validation",
+      "item": [
+        {
+          "name": "NEG-01 departure_date — text string (banana)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('Response contains error detail', function () {",
+                  "    pm.expect(pm.response.json()).to.have.property('detail');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"banana\",\n  \"seat_class\": \"economy\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-02 departure_date — wrong format (DD/MM/YYYY)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"31/12/2029\",\n  \"seat_class\": \"economy\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-03 departure_date — date in the past",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2020-06-01\",\n  \"seat_class\": \"economy\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-04 passenger first_name — too short (1 char)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"A\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-05 passenger first_name — too long (300 chars)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-06 destination — invalid value (Pluto, poor guy)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('Error mentions valid destinations', function () {",
+                  "    var detail = pm.response.json().detail;",
+                  "    pm.expect(detail).to.be.a('string');",
+                  "    pm.expect(detail).to.include('Mars');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Pluto\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-07 seat_class — invalid value (premium)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"premium\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-08 missing required field — destination",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-09 missing required field — departure_date",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"seat_class\": \"economy\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-10 empty request body",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-11 unknown extra field (colour: red)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Request succeeds — extra fields are silently ignored', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "pm.test('Response does not echo back the unknown field', function () {",
+                  "    pm.expect(pm.response.json()).to.not.have.property('colour');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\",\n  \"colour\": \"red\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-12 duplicate booking (same passenger + destination + date)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get('base_url') + '/bookings',",
+                  "    method: 'POST',",
+                  "    header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            passenger: { first_name: 'Echo', last_name: 'Duplicate' },",
+                  "            destination: 'Neptune',",
+                  "            departure_date: '2030-12-31',",
+                  "            seat_class: 'vip'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    // first booking created — the actual request below is a duplicate",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 409 Conflict — duplicate booking rejected', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passenger\": { \"first_name\": \"Echo\", \"last_name\": \"Duplicate\" },\n  \"destination\": \"Neptune\",\n  \"departure_date\": \"2030-12-31\",\n  \"seat_class\": \"vip\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GET /bookings — Filters",
+      "item": [
+        {
+          "name": "NEG-13 status filter — uppercase Pending (case-sensitive bug)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Returns results — filter is case-insensitive', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.items.length).to.be.above(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bookings?status=Pending",
+              "host": ["{{base_url}}"],
+              "path": ["bookings"],
+              "query": [{ "key": "status", "value": "Pending" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-14 status filter — invalid value (flying)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('No items returned for invalid status value', function () {",
+                  "    pm.expect(pm.response.json().items.length).to.eql(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bookings?status=flying",
+              "host": ["{{base_url}}"],
+              "path": ["bookings"],
+              "query": [{ "key": "status", "value": "flying" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-15 pagination — page=0 (below minimum)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bookings?page=0",
+              "host": ["{{base_url}}"],
+              "path": ["bookings"],
+              "query": [{ "key": "page", "value": "0" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-16 pagination — limit=999 (above maximum)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bookings?limit=999",
+              "host": ["{{base_url}}"],
+              "path": ["bookings"],
+              "query": [{ "key": "limit", "value": "999" }]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "GET /bookings — {id}",
+      "item": [
+        {
+          "name": "NEG-17 non-existent ID (99999)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404 Not Found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});",
+                  "pm.test('Response contains error detail', function () {",
+                  "    pm.expect(pm.response.json()).to.have.property('detail');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/bookings/99999"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-18 negative ID (-1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404 or 422', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([404, 422]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/bookings/-1"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-19 string ID (abc)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/bookings/abc"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PUT /bookings — {id}",
+      "item": [
+        {
+          "name": "NEG-20 invalid status value (flying)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get('base_url') + '/bookings',",
+                  "    method: 'POST',",
+                  "    header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            passenger: { first_name: 'Status', last_name: 'Test' },",
+                  "            destination: 'Jupiter',",
+                  "            departure_date: '2029-07-04',",
+                  "            seat_class: 'economy'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    pm.environment.set('neg_put_id', res.json().id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"flying\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings/{{neg_put_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-21 status transition — cancelled → pending",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.environment.get('base_url');",
+                  "",
+                  "pm.sendRequest({",
+                  "    url: baseUrl + '/bookings',",
+                  "    method: 'POST',",
+                  "    header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            passenger: { first_name: 'Cancel', last_name: 'Setup-A' },",
+                  "            destination: 'Venus',",
+                  "            departure_date: '2029-08-01',",
+                  "            seat_class: 'economy'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    var id = res.json().id;",
+                  "    pm.sendRequest({",
+                  "        url: baseUrl + '/bookings/' + id,",
+                  "        method: 'PUT',",
+                  "        header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "        body: { mode: 'raw', raw: JSON.stringify({ status: 'cancelled' }) }",
+                  "    }, function (err2, res2) {",
+                  "        pm.environment.set('cancelled_id_a', id);",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 — cancelled is a final state', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"pending\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings/{{cancelled_id_a}}"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-22 status transition — cancelled → confirmed",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.environment.get('base_url');",
+                  "",
+                  "pm.sendRequest({",
+                  "    url: baseUrl + '/bookings',",
+                  "    method: 'POST',",
+                  "    header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            passenger: { first_name: 'Cancel', last_name: 'Setup-B' },",
+                  "            destination: 'Saturn',",
+                  "            departure_date: '2029-09-01',",
+                  "            seat_class: 'business'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    var id = res.json().id;",
+                  "    pm.sendRequest({",
+                  "        url: baseUrl + '/bookings/' + id,",
+                  "        method: 'PUT',",
+                  "        header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "        body: { mode: 'raw', raw: JSON.stringify({ status: 'cancelled' }) }",
+                  "    }, function (err2, res2) {",
+                  "        pm.environment.set('cancelled_id_b', id);",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 — cancelled is a final state', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings/{{cancelled_id_b}}"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-23 non-existent ID (99999)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404 Not Found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings/99999"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-24 string ID (abc)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 Unprocessable Entity', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{base_url}}/bookings/abc"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "DELETE /bookings — {id}",
+      "item": [
+        {
+          "name": "NEG-25 delete booking in pending status",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.sendRequest({",
+                  "    url: pm.environment.get('base_url') + '/bookings',",
+                  "    method: 'POST',",
+                  "    header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            passenger: { first_name: 'Delete', last_name: 'Pending' },",
+                  "            destination: 'Uranus',",
+                  "            departure_date: '2029-10-15',",
+                  "            seat_class: 'vip'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    pm.environment.set('del_pending_id', res.json().id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 — cannot delete pending booking', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/bookings/{{del_pending_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-26 delete booking in confirmed status",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var baseUrl = pm.environment.get('base_url');",
+                  "",
+                  "pm.sendRequest({",
+                  "    url: baseUrl + '/bookings',",
+                  "    method: 'POST',",
+                  "    header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            passenger: { first_name: 'Delete', last_name: 'Confirmed' },",
+                  "            destination: 'Mercury',",
+                  "            departure_date: '2029-11-20',",
+                  "            seat_class: 'business'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    var id = res.json().id;",
+                  "    pm.sendRequest({",
+                  "        url: baseUrl + '/bookings/' + id,",
+                  "        method: 'PUT',",
+                  "        header: [{ key: 'Content-Type', value: 'application/json' }],",
+                  "        body: { mode: 'raw', raw: JSON.stringify({ status: 'confirmed' }) }",
+                  "    }, function (err2, res2) {",
+                  "        pm.environment.set('del_confirmed_id', id);",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 422 — cannot delete confirmed booking', function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/bookings/{{del_confirmed_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "NEG-27 non-existent ID (99999)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404 Not Found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{base_url}}/bookings/99999"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
