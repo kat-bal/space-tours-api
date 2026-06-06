@@ -1,7 +1,7 @@
 {
   "info": {
     "_postman_id": "3d6e80a0-6ca2-40ca-b8ca-443b738c1a1e",
-    "name": "Space-Tours-API",
+    "name": "Space-Tours-API — Smoke Tests",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "18266109"
   },
