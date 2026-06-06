@@ -606,50 +606,50 @@
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('missions')">Missions</button>
-    <button class="tab" onclick="showTab('new')">+ New Booking</button>
+    <button class="tab active" onclick="showTab('missions')" data-testid="tab-missions">Missions</button>
+    <button class="tab" onclick="showTab('new')" data-testid="tab-new-booking">+ New Booking</button>
   </div>
 
   <!-- Missions tab -->
   <div id="tab-missions">
     <div class="stats-row">
-      <div class="stat-card">
+      <div class="stat-card" data-testid="stats-card-total">
         <div class="stat-label">Total</div>
-        <div class="stat-val" id="stat-total">—</div>
+        <div class="stat-val" id="stat-total" data-testid="stats-value-total">—</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" data-testid="stats-card-pending">
         <div class="stat-label">Pending</div>
-        <div class="stat-val" id="stat-pending" style="color:var(--amber)">—</div>
+        <div class="stat-val" id="stat-pending" data-testid="stats-value-pending" style="color:var(--amber)">—</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" data-testid="stats-card-confirmed">
         <div class="stat-label">Confirmed</div>
-        <div class="stat-val" id="stat-confirmed" style="color:var(--green)">—</div>
+        <div class="stat-val" id="stat-confirmed" data-testid="stats-value-confirmed" style="color:var(--green)">—</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" data-testid="stats-card-cancelled">
         <div class="stat-label">Cancelled</div>
-        <div class="stat-val" id="stat-cancelled" style="color:var(--red)">—</div>
+        <div class="stat-val" id="stat-cancelled" data-testid="stats-value-cancelled" style="color:var(--red)">—</div>
       </div>
     </div>
 
     <div class="filter-row">
       <span class="filter-label">Filter:</span>
-      <select id="filter-dest" onchange="currentPage=1;loadBookings()">
+      <select id="filter-dest" data-testid="filter-select-destination" onchange="currentPage=1;loadBookings()">
         <option value="">All destinations</option>
         <option>Mercury</option><option>Venus</option><option>Mars</option>
         <option>Jupiter</option><option>Saturn</option><option>Uranus</option><option>Neptune</option>
       </select>
-      <select id="filter-status" onchange="currentPage=1;loadBookings()">
+      <select id="filter-status" data-testid="filter-select-status" onchange="currentPage=1;loadBookings()">
         <option value="">All statuses</option>
         <option>pending</option><option>confirmed</option><option>cancelled</option>
       </select>
-      <select id="filter-class" onchange="currentPage=1;loadBookings()">
+      <select id="filter-class" data-testid="filter-select-class" onchange="currentPage=1;loadBookings()">
         <option value="">All classes</option>
         <option value="economy">Economy</option>
         <option value="business">Business</option>
         <option value="vip">VIP</option>
       </select>
-      <button class="action-btn" onclick="resetFilters()" style="margin-left:auto" data-tooltip="Clear all filters">✕ Reset</button>
-      <button class="action-btn" onclick="loadBookings()" data-tooltip="Reload from API">↻ Refresh</button>
+      <button class="action-btn" onclick="resetFilters()" style="margin-left:auto" data-testid="filter-btn-reset" data-tooltip="Clear all filters">✕ Reset</button>
+      <button class="action-btn" onclick="loadBookings()" data-testid="filter-btn-refresh" data-tooltip="Reload from API">↻ Refresh</button>
     </div>
 
     <div class="section-title">Mission Manifest</div>
@@ -676,19 +676,19 @@
   <!-- New booking tab -->
   <div id="tab-new" class="hidden">
     <div class="section-title">New Mission Booking</div>
-    <div class="form-card">
+    <div class="form-card" data-testid="booking-form">
       <div class="form-grid">
         <div class="form-group">
           <label>First Name</label>
-          <input type="text" id="f-first-name" placeholder="First name">
+          <input type="text" id="f-first-name" data-testid="booking-form-input-first-name" placeholder="First name">
         </div>
         <div class="form-group">
           <label>Last Name</label>
-          <input type="text" id="f-last-name" placeholder="Last name">
+          <input type="text" id="f-last-name" data-testid="booking-form-input-last-name" placeholder="Last name">
         </div>
         <div class="form-group">
           <label>Destination</label>
-          <select id="f-dest">
+          <select id="f-dest" data-testid="booking-form-select-destination">
             <option value="">Select planet...</option>
             <option>Mercury</option><option>Venus</option><option>Mars</option>
             <option>Jupiter</option><option>Saturn</option><option>Uranus</option><option>Neptune</option>
@@ -696,62 +696,62 @@
         </div>
         <div class="form-group">
           <label>Departure Date</label>
-          <input type="date" id="f-date">
+          <input type="date" id="f-date" data-testid="booking-form-input-departure-date">
         </div>
         <div class="form-group">
           <label>Seat Class</label>
-          <select id="f-class">
+          <select id="f-class" data-testid="booking-form-select-seat-class">
             <option value="economy">Economy</option>
             <option value="business">Business</option>
             <option value="vip">VIP</option>
           </select>
         </div>
       </div>
-      <button class="btn-cancel" onclick="showTab('missions')">Cancel</button>
-      <button class="btn-primary" onclick="createBooking()">▶ Launch Booking</button>
+      <button class="btn-cancel" onclick="showTab('missions')" data-testid="booking-form-btn-cancel">Cancel</button>
+      <button class="btn-primary" onclick="createBooking()" data-testid="booking-form-btn-submit">▶ Launch Booking</button>
     </div>
   </div>
 </div>
 
 <!-- Confirm Modal -->
-<div id="modal" class="modal-overlay hidden">
+<div id="modal" class="modal-overlay hidden" data-testid="modal-confirm">
   <div class="modal">
-    <div class="modal-title" id="modal-title">Confirm Action</div>
-    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-title" id="modal-title" data-testid="modal-title">Confirm Action</div>
+    <div class="modal-body" id="modal-body" data-testid="modal-body"></div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Abort</button>
-      <button class="btn-primary" id="modal-confirm">Confirm</button>
+      <button class="btn-cancel" onclick="closeModal()" data-testid="modal-btn-abort">Abort</button>
+      <button class="btn-primary" id="modal-confirm" data-testid="modal-btn-confirm">Confirm</button>
     </div>
   </div>
 </div>
 
 <!-- Edit Modal -->
-<div id="edit-modal" class="modal-overlay hidden">
+<div id="edit-modal" class="modal-overlay hidden" data-testid="modal-edit">
   <div class="modal modal-edit">
     <div class="modal-title">Edit Booking</div>
     <div class="form-grid" style="margin-bottom:16px">
       <div class="form-group">
         <label>First Name</label>
-        <input type="text" id="edit-first-name" placeholder="First name">
+        <input type="text" id="edit-first-name" data-testid="edit-modal-input-first-name" placeholder="First name">
       </div>
       <div class="form-group">
         <label>Last Name</label>
-        <input type="text" id="edit-last-name" placeholder="Last name">
+        <input type="text" id="edit-last-name" data-testid="edit-modal-input-last-name" placeholder="Last name">
       </div>
       <div class="form-group">
         <label>Destination</label>
-        <select id="edit-dest">
+        <select id="edit-dest" data-testid="edit-modal-select-destination">
           <option>Mercury</option><option>Venus</option><option>Mars</option>
           <option>Jupiter</option><option>Saturn</option><option>Uranus</option><option>Neptune</option>
         </select>
       </div>
       <div class="form-group">
         <label>Departure Date</label>
-        <input type="date" id="edit-date">
+        <input type="date" id="edit-date" data-testid="edit-modal-input-departure-date">
       </div>
       <div class="form-group">
         <label>Seat Class</label>
-        <select id="edit-class">
+        <select id="edit-class" data-testid="edit-modal-select-seat-class">
           <option value="economy">Economy</option>
           <option value="business">Business</option>
           <option value="vip">VIP</option>
@@ -759,13 +759,13 @@
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeEditModal()">Abort</button>
-      <button class="btn-primary" id="edit-confirm">▶ Save Changes</button>
+      <button class="btn-cancel" onclick="closeEditModal()" data-testid="edit-modal-btn-abort">Abort</button>
+      <button class="btn-primary" id="edit-confirm" data-testid="edit-modal-btn-save">▶ Save Changes</button>
     </div>
   </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" data-testid="toast"></div>
 
 <script>
   const API = window.location.hostname.includes('-x')
@@ -963,27 +963,27 @@
       return;
     }
     el.innerHTML = bookings.map(b => `
-      <div class="table-row">
-        <div class="td td-id">#${b.id}</div>
+      <div class="table-row" data-testid="booking-row" data-booking-id="${b.id}">
+        <div class="td td-id" data-testid="booking-cell-id">#${b.id}</div>
         <div class="td" style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">${b.created_at ? b.created_at.slice(0,10) : '—'}</div>
-        <div class="td td-name">${b.passenger.first_name}</div>
-        <div class="td td-name">${b.passenger.last_name}</div>
-        <div class="td"><span class="planet-badge planet-${b.destination}">${b.destination}</span></div>
-        <div class="td" style="font-family:var(--mono);font-size:12px;color:var(--text-dim)">${b.departure_date}</div>
-        <div class="td"><span class="seat-badge">${b.seat_class}</span></div>
-        <div class="td"><span class="status-badge status-${b.status}">${b.status}</span></div>
+        <div class="td td-name" data-testid="booking-cell-first-name">${b.passenger.first_name}</div>
+        <div class="td td-name" data-testid="booking-cell-last-name">${b.passenger.last_name}</div>
+        <div class="td"><span class="planet-badge planet-${b.destination}" data-testid="booking-cell-destination">${b.destination}</span></div>
+        <div class="td" style="font-family:var(--mono);font-size:12px;color:var(--text-dim)" data-testid="booking-cell-departure-date">${b.departure_date}</div>
+        <div class="td"><span class="seat-badge" data-testid="booking-cell-seat-class">${b.seat_class}</span></div>
+        <div class="td"><span class="status-badge status-${b.status}" data-testid="booking-cell-status">${b.status}</span></div>
         <div class="td">
           ${b.status !== 'cancelled'
-            ? `<button class="action-btn" onclick="openEditModal(${b.id})" data-tooltip="Edit booking details">✎ Edit</button>`
-            : `<button class="action-btn" disabled data-tooltip="Cancelled bookings cannot be edited">✎ Edit</button>`}
+            ? `<button class="action-btn" onclick="openEditModal(${b.id})" data-testid="booking-btn-edit" data-booking-id="${b.id}" data-tooltip="Edit booking details">✎ Edit</button>`
+            : `<button class="action-btn" disabled data-testid="booking-btn-edit" data-booking-id="${b.id}" data-tooltip="Cancelled bookings cannot be edited">✎ Edit</button>`}
           ${b.status === 'pending'
-            ? `<button class="action-btn" onclick="confirmBooking(${b.id})" data-tooltip="Confirm booking">✓</button>`
+            ? `<button class="action-btn" onclick="confirmBooking(${b.id})" data-testid="booking-btn-confirm" data-booking-id="${b.id}" data-tooltip="Confirm booking">✓</button>`
             : ''}
           ${b.status === 'pending' || b.status === 'confirmed'
-            ? `<button class="action-btn cancel-btn" onclick="cancelBooking(${b.id}, '${b.passenger.first_name} ${b.passenger.last_name}')" data-tooltip="Cancel booking">✕</button>`
+            ? `<button class="action-btn cancel-btn" onclick="cancelBooking(${b.id}, '${b.passenger.first_name} ${b.passenger.last_name}')" data-testid="booking-btn-cancel" data-booking-id="${b.id}" data-tooltip="Cancel booking">✕</button>`
             : ''}
           ${b.status === 'cancelled'
-            ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger.first_name} ${b.passenger.last_name}')" data-tooltip="Delete booking">🗑</button>`
+            ? `<button class="action-btn del" onclick="deleteBooking(${b.id}, '${b.passenger.first_name} ${b.passenger.last_name}')" data-testid="booking-btn-delete" data-booking-id="${b.id}" data-tooltip="Delete booking">🗑</button>`
             : ''}
         </div>
       </div>
