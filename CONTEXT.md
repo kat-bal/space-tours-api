@@ -161,6 +161,20 @@ Swagger: http://localhost:8000/docs
 - **Swagger UI** — interaktívna dokumentácia, ideálna pre začiatočníkov
 - **Postman** — kolekcia uložená v repozitári (`Space-Tours-API.postman_collection.json`); dve environments: `Space-Tours-API-prod` a `Space-Tours-API-staging` (prepínajú `{{base_url}}`)
 - **Neon SQL Editor** — priamy prístup do databázy cez browser
+- **DBeaver Community** — bezplatný databázový editor; funguje so SQLite aj PostgreSQL
+
+### Pripojenie cez DBeaver
+
+**SQLite (lokálne):**
+1. **Database → New Database Connection → SQLite**
+2. Do poľa **Path** zadaj cestu k súboru `space_tours.db` v priečinku projektu
+3. Klikni **Finish**
+
+**PostgreSQL — Neon (produkčné):**
+1. V [Neon konzole](https://console.neon.tech) otvor projekt → **Connection Details**
+2. **Database → New Database Connection → PostgreSQL**
+3. Vyplň parametre (Host, Port, Database, Username, Password) podľa Neon konzoly
+4. Klikni **Test Connection** → **Finish**
 
 ---
 
