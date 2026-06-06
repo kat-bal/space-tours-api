@@ -9,7 +9,7 @@
       "name": "POST /bookings",
       "item": [
         {
-          "name": "Create booking — valid request",
+          "name": "TC-001 Create booking — valid request",
           "event": [
             {
               "listen": "test",
@@ -45,14 +45,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Yuri\", \"last_name\": \"Gagarin\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"business\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-01 departure_date — text string (banana)",
+          "name": "TC-002 departure_date — text string (banana)",
           "event": [
             {
               "listen": "test",
@@ -75,14 +79,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"banana\",\n  \"seat_class\": \"economy\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-02 departure_date — wrong format (DD/MM/YYYY)",
+          "name": "TC-003 departure_date — wrong format (DD/MM/YYYY)",
           "event": [
             {
               "listen": "test",
@@ -102,14 +110,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"31/12/2029\",\n  \"seat_class\": \"economy\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-03 departure_date — date in the past",
+          "name": "TC-004 departure_date — date in the past",
           "event": [
             {
               "listen": "test",
@@ -129,14 +141,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2020-06-01\",\n  \"seat_class\": \"economy\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-04 passenger first_name — too short (1 char)",
+          "name": "TC-005 passenger first_name — too short (1 char)",
           "event": [
             {
               "listen": "test",
@@ -156,14 +172,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"A\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-05 passenger first_name — too long (300 chars)",
+          "name": "TC-006 passenger first_name — too long (300 chars)",
           "event": [
             {
               "listen": "test",
@@ -183,14 +203,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-06 destination — invalid value (Pluto, poor guy)",
+          "name": "TC-007 destination — invalid value (Pluto, poor guy)",
           "event": [
             {
               "listen": "test",
@@ -215,14 +239,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Pluto\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-07 seat_class — invalid value (premium)",
+          "name": "TC-008 seat_class — invalid value (premium)",
           "event": [
             {
               "listen": "test",
@@ -242,14 +270,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"premium\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-08 missing required field — destination",
+          "name": "TC-009 missing required field — destination",
           "event": [
             {
               "listen": "test",
@@ -277,14 +309,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-09 missing required field — departure_date",
+          "name": "TC-010 missing required field — departure_date",
           "event": [
             {
               "listen": "test",
@@ -312,14 +348,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"seat_class\": \"economy\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-10 empty request body",
+          "name": "TC-011 empty request body",
           "event": [
             {
               "listen": "test",
@@ -355,14 +395,18 @@
             "body": {
               "mode": "raw",
               "raw": "{}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-11 unknown extra field (colour: red)",
+          "name": "TC-012 unknown extra field (colour: red)",
           "event": [
             {
               "listen": "test",
@@ -385,14 +429,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Buzz\", \"last_name\": \"Lightyear\" },\n  \"destination\": \"Mars\",\n  \"departure_date\": \"2029-07-04\",\n  \"seat_class\": \"economy\",\n  \"colour\": \"red\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
           "response": []
         },
         {
-          "name": "NEG-12 duplicate booking (same passenger + destination + date)",
+          "name": "TC-013 duplicate booking (same passenger + destination + date)",
           "event": [
             {
               "listen": "prerequest",
@@ -436,7 +484,11 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"passenger\": { \"first_name\": \"Echo\", \"last_name\": \"Duplicate\" },\n  \"destination\": \"Neptune\",\n  \"departure_date\": \"2030-12-31\",\n  \"seat_class\": \"vip\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings"
           },
@@ -448,7 +500,7 @@
       "name": "GET /bookings",
       "item": [
         {
-          "name": "Get all bookings — default pagination",
+          "name": "TC-014 Get all bookings — default pagination",
           "event": [
             {
               "listen": "test",
@@ -481,7 +533,7 @@
           "response": []
         },
         {
-          "name": "Filter by status=pending",
+          "name": "TC-015 Filter by status=pending",
           "event": [
             {
               "listen": "test",
@@ -505,15 +557,24 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/bookings?status=pending",
-              "host": ["{{base_url}}"],
-              "path": ["bookings"],
-              "query": [{ "key": "status", "value": "pending" }]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending"
+                }
+              ]
             }
           },
           "response": []
         },
         {
-          "name": "Filter by destination=Mars",
+          "name": "TC-016 Filter by destination=Mars",
           "event": [
             {
               "listen": "test",
@@ -537,15 +598,24 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/bookings?destination=Mars",
-              "host": ["{{base_url}}"],
-              "path": ["bookings"],
-              "query": [{ "key": "destination", "value": "Mars" }]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "destination",
+                  "value": "Mars"
+                }
+              ]
             }
           },
           "response": []
         },
         {
-          "name": "NEG-13 status filter — uppercase Pending (case-sensitive bug)",
+          "name": "TC-017 status filter — uppercase Pending (case-sensitive bug)",
           "event": [
             {
               "listen": "test",
@@ -568,15 +638,24 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/bookings?status=Pending",
-              "host": ["{{base_url}}"],
-              "path": ["bookings"],
-              "query": [{ "key": "status", "value": "Pending" }]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "Pending"
+                }
+              ]
             }
           },
           "response": []
         },
         {
-          "name": "NEG-14 status filter — invalid value (flying)",
+          "name": "TC-018 status filter — invalid value (flying)",
           "event": [
             {
               "listen": "test",
@@ -598,15 +677,24 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/bookings?status=flying",
-              "host": ["{{base_url}}"],
-              "path": ["bookings"],
-              "query": [{ "key": "status", "value": "flying" }]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "flying"
+                }
+              ]
             }
           },
           "response": []
         },
         {
-          "name": "NEG-15 pagination — page=0 (below minimum)",
+          "name": "TC-019 pagination — page=0 (below minimum)",
           "event": [
             {
               "listen": "test",
@@ -625,15 +713,24 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/bookings?page=0",
-              "host": ["{{base_url}}"],
-              "path": ["bookings"],
-              "query": [{ "key": "page", "value": "0" }]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                }
+              ]
             }
           },
           "response": []
         },
         {
-          "name": "NEG-16 pagination — limit=101 (boundary, above maximum of 100)",
+          "name": "TC-020 pagination — limit=101 (boundary, above maximum of 100)",
           "event": [
             {
               "listen": "test",
@@ -652,9 +749,18 @@
             "header": [],
             "url": {
               "raw": "{{base_url}}/bookings?limit=101",
-              "host": ["{{base_url}}"],
-              "path": ["bookings"],
-              "query": [{ "key": "limit", "value": "101" }]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "bookings"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "101"
+                }
+              ]
             }
           },
           "response": []
@@ -665,7 +771,7 @@
       "name": "GET /bookings — {id}",
       "item": [
         {
-          "name": "Get booking by ID — existing booking",
+          "name": "TC-021 Get booking by ID — existing booking",
           "event": [
             {
               "listen": "prerequest",
@@ -721,7 +827,7 @@
           "response": []
         },
         {
-          "name": "NEG-17 non-existent ID (99999)",
+          "name": "TC-022 non-existent ID (99999)",
           "event": [
             {
               "listen": "test",
@@ -746,7 +852,7 @@
           "response": []
         },
         {
-          "name": "NEG-18 negative ID (-1)",
+          "name": "TC-023 negative ID (-1)",
           "event": [
             {
               "listen": "test",
@@ -768,7 +874,7 @@
           "response": []
         },
         {
-          "name": "NEG-19 string ID (abc)",
+          "name": "TC-024 string ID (abc)",
           "event": [
             {
               "listen": "test",
@@ -795,7 +901,7 @@
       "name": "PUT /bookings — {id}",
       "item": [
         {
-          "name": "Update booking — pending → confirmed",
+          "name": "TC-025 Update booking — pending → confirmed",
           "event": [
             {
               "listen": "prerequest",
@@ -842,14 +948,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"confirmed\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings/{{func_put_id}}"
           },
           "response": []
         },
         {
-          "name": "Update booking — confirmed → cancelled",
+          "name": "TC-026 Update booking — confirmed → cancelled",
           "event": [
             {
               "listen": "test",
@@ -872,14 +982,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"cancelled\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings/{{func_put_id}}"
           },
           "response": []
         },
         {
-          "name": "NEG-20 invalid status value (flying)",
+          "name": "TC-027 invalid status value (flying)",
           "event": [
             {
               "listen": "prerequest",
@@ -923,14 +1037,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"flying\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings/{{neg_put_id}}"
           },
           "response": []
         },
         {
-          "name": "NEG-21 status transition — cancelled → pending",
+          "name": "TC-028 status transition — cancelled → pending",
           "event": [
             {
               "listen": "prerequest",
@@ -984,14 +1102,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"pending\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings/{{cancelled_id_a}}"
           },
           "response": []
         },
         {
-          "name": "NEG-22 status transition — cancelled → confirmed",
+          "name": "TC-029 status transition — cancelled → confirmed",
           "event": [
             {
               "listen": "prerequest",
@@ -1045,14 +1167,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"confirmed\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings/{{cancelled_id_b}}"
           },
           "response": []
         },
         {
-          "name": "NEG-23 non-existent ID (99999)",
+          "name": "TC-030 non-existent ID (99999)",
           "event": [
             {
               "listen": "test",
@@ -1072,14 +1198,18 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"confirmed\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings/99999"
           },
           "response": []
         },
         {
-          "name": "NEG-24 string ID (abc)",
+          "name": "TC-031 string ID (abc)",
           "event": [
             {
               "listen": "test",
@@ -1099,7 +1229,11 @@
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"confirmed\"\n}",
-              "options": { "raw": { "language": "json" } }
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": "{{base_url}}/bookings/abc"
           },
@@ -1111,7 +1245,7 @@
       "name": "DELETE /bookings — {id}",
       "item": [
         {
-          "name": "Delete booking — cancelled status",
+          "name": "TC-032 Delete booking — cancelled status",
           "event": [
             {
               "listen": "prerequest",
@@ -1172,7 +1306,7 @@
           "response": []
         },
         {
-          "name": "NEG-25 delete booking in pending status",
+          "name": "TC-033 delete booking in pending status",
           "event": [
             {
               "listen": "prerequest",
@@ -1218,7 +1352,7 @@
           "response": []
         },
         {
-          "name": "NEG-26 delete booking in confirmed status",
+          "name": "TC-034 delete booking in confirmed status",
           "event": [
             {
               "listen": "prerequest",
@@ -1274,7 +1408,7 @@
           "response": []
         },
         {
-          "name": "NEG-27 non-existent ID (99999)",
+          "name": "TC-035 non-existent ID (99999)",
           "event": [
             {
               "listen": "test",
