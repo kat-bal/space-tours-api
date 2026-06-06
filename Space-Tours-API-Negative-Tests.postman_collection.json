@@ -214,6 +214,14 @@
                 "exec": [
                   "pm.test('Status is 422 Unprocessable Entity', function () {",
                   "    pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('Error points to missing destination field', function () {",
+                  "    var detail = pm.response.json().detail;",
+                  "    var destinationError = detail.find(function (e) {",
+                  "        return e.loc.includes('destination');",
+                  "    });",
+                  "    pm.expect(destinationError).to.not.be.undefined;",
+                  "    pm.expect(destinationError.msg).to.eql('Field required');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -241,6 +249,14 @@
                 "exec": [
                   "pm.test('Status is 422 Unprocessable Entity', function () {",
                   "    pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('Error points to missing departure_date field', function () {",
+                  "    var detail = pm.response.json().detail;",
+                  "    var dateError = detail.find(function (e) {",
+                  "        return e.loc.includes('departure_date');",
+                  "    });",
+                  "    pm.expect(dateError).to.not.be.undefined;",
+                  "    pm.expect(dateError.msg).to.eql('Field required');",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -268,6 +284,22 @@
                 "exec": [
                   "pm.test('Status is 422 Unprocessable Entity', function () {",
                   "    pm.response.to.have.status(422);",
+                  "});",
+                  "pm.test('Error list contains 3 missing fields', function () {",
+                  "    var detail = pm.response.json().detail;",
+                  "    pm.expect(detail).to.be.an('array');",
+                  "    pm.expect(detail.length).to.eql(3);",
+                  "});",
+                  "pm.test('All errors are Field required', function () {",
+                  "    pm.response.json().detail.forEach(function (e) {",
+                  "        pm.expect(e.msg).to.eql('Field required');",
+                  "    });",
+                  "});",
+                  "pm.test('Errors cover passenger, destination, departure_date', function () {",
+                  "    var fields = pm.response.json().detail.map(function (e) { return e.loc[1]; });",
+                  "    pm.expect(fields).to.include('passenger');",
+                  "    pm.expect(fields).to.include('destination');",
+                  "    pm.expect(fields).to.include('departure_date');",
                   "});"
                 ],
                 "type": "text/javascript"
