@@ -6,10 +6,74 @@
   },
   "item": [
     {
+      "name": "GET /destinations",
+      "item": [
+        {
+          "name": "TC-001 Returns list of all destinations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response is an array', function () {",
+                  "    pm.expect(pm.response.json()).to.be.an('array');",
+                  "});",
+                  "pm.test('Returns exactly 7 destinations', function () {",
+                  "    pm.expect(pm.response.json().length).to.eql(7);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/destinations"
+          },
+          "response": []
+        },
+        {
+          "name": "TC-002 Each destination has required fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Each destination has id, name, distance_km, duration_days, price_usd', function () {",
+                  "    pm.response.json().forEach(function (d) {",
+                  "        pm.expect(d).to.have.property('id');",
+                  "        pm.expect(d).to.have.property('name');",
+                  "        pm.expect(d).to.have.property('distance_km');",
+                  "        pm.expect(d).to.have.property('duration_days');",
+                  "        pm.expect(d).to.have.property('price_usd');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/destinations"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "POST /bookings",
       "item": [
         {
-          "name": "TC-001 Create booking — valid request",
+          "name": "TC-003 Create booking — valid request",
           "event": [
             {
               "listen": "test",
@@ -56,7 +120,7 @@
           "response": []
         },
         {
-          "name": "TC-002 departure_date — text string (banana)",
+          "name": "TC-004 departure_date — text string (banana)",
           "event": [
             {
               "listen": "test",
@@ -90,7 +154,7 @@
           "response": []
         },
         {
-          "name": "TC-003 departure_date — wrong format (DD/MM/YYYY)",
+          "name": "TC-005 departure_date — wrong format (DD/MM/YYYY)",
           "event": [
             {
               "listen": "test",
@@ -121,7 +185,7 @@
           "response": []
         },
         {
-          "name": "TC-004 departure_date — date in the past",
+          "name": "TC-006 departure_date — date in the past",
           "event": [
             {
               "listen": "test",
@@ -152,7 +216,7 @@
           "response": []
         },
         {
-          "name": "TC-005 passenger first_name — too short (1 char)",
+          "name": "TC-007 passenger first_name — too short (1 char)",
           "event": [
             {
               "listen": "test",
@@ -183,7 +247,7 @@
           "response": []
         },
         {
-          "name": "TC-006 passenger first_name — too long (300 chars)",
+          "name": "TC-008 passenger first_name — too long (300 chars)",
           "event": [
             {
               "listen": "test",
@@ -214,7 +278,7 @@
           "response": []
         },
         {
-          "name": "TC-007 destination — invalid value (Pluto, poor guy)",
+          "name": "TC-009 destination — invalid value (Pluto, poor guy)",
           "event": [
             {
               "listen": "test",
@@ -250,7 +314,7 @@
           "response": []
         },
         {
-          "name": "TC-008 seat_class — invalid value (premium)",
+          "name": "TC-010 seat_class — invalid value (premium)",
           "event": [
             {
               "listen": "test",
@@ -281,7 +345,7 @@
           "response": []
         },
         {
-          "name": "TC-009 missing required field — destination",
+          "name": "TC-011 missing required field — destination",
           "event": [
             {
               "listen": "test",
@@ -320,7 +384,7 @@
           "response": []
         },
         {
-          "name": "TC-010 missing required field — departure_date",
+          "name": "TC-012 missing required field — departure_date",
           "event": [
             {
               "listen": "test",
@@ -359,7 +423,7 @@
           "response": []
         },
         {
-          "name": "TC-011 empty request body",
+          "name": "TC-013 empty request body",
           "event": [
             {
               "listen": "test",
@@ -406,7 +470,7 @@
           "response": []
         },
         {
-          "name": "TC-012 unknown extra field (colour: red)",
+          "name": "TC-014 unknown extra field (colour: red)",
           "event": [
             {
               "listen": "test",
@@ -440,7 +504,7 @@
           "response": []
         },
         {
-          "name": "TC-013 duplicate booking (same passenger + destination + date)",
+          "name": "TC-015 duplicate booking (same passenger + destination + date)",
           "event": [
             {
               "listen": "prerequest",
@@ -500,7 +564,7 @@
       "name": "GET /bookings",
       "item": [
         {
-          "name": "TC-014 Get all bookings — default pagination",
+          "name": "TC-016 Get all bookings — default pagination",
           "event": [
             {
               "listen": "test",
@@ -533,7 +597,7 @@
           "response": []
         },
         {
-          "name": "TC-015 Filter by status=pending",
+          "name": "TC-017 Filter by status=pending",
           "event": [
             {
               "listen": "test",
@@ -574,7 +638,7 @@
           "response": []
         },
         {
-          "name": "TC-016 Filter by destination=Mars",
+          "name": "TC-018 Filter by destination=Mars",
           "event": [
             {
               "listen": "test",
@@ -615,7 +679,7 @@
           "response": []
         },
         {
-          "name": "TC-017 status filter — uppercase Pending (case-sensitive bug)",
+          "name": "TC-019 status filter — uppercase Pending (case-sensitive bug)",
           "event": [
             {
               "listen": "test",
@@ -655,7 +719,7 @@
           "response": []
         },
         {
-          "name": "TC-018 status filter — invalid value (flying)",
+          "name": "TC-020 status filter — invalid value (flying)",
           "event": [
             {
               "listen": "test",
@@ -694,7 +758,7 @@
           "response": []
         },
         {
-          "name": "TC-019 pagination — page=0 (below minimum)",
+          "name": "TC-021 pagination — page=0 (below minimum)",
           "event": [
             {
               "listen": "test",
@@ -730,7 +794,7 @@
           "response": []
         },
         {
-          "name": "TC-020 pagination — limit=101 (boundary, above maximum of 100)",
+          "name": "TC-022 pagination — limit=101 (boundary, above maximum of 100)",
           "event": [
             {
               "listen": "test",
@@ -768,10 +832,99 @@
       ]
     },
     {
+      "name": "GET /bookings/stats",
+      "item": [
+        {
+          "name": "TC-023 Returns all stat fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Response has all stat fields', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('total');",
+                  "    pm.expect(json).to.have.property('pending');",
+                  "    pm.expect(json).to.have.property('confirmed');",
+                  "    pm.expect(json).to.have.property('cancelled');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/bookings/stats"
+          },
+          "response": []
+        },
+        {
+          "name": "TC-024 All values are numbers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('All stat values are numbers', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.total).to.be.a('number');",
+                  "    pm.expect(json.pending).to.be.a('number');",
+                  "    pm.expect(json.confirmed).to.be.a('number');",
+                  "    pm.expect(json.cancelled).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/bookings/stats"
+          },
+          "response": []
+        },
+        {
+          "name": "TC-025 Total equals sum of statuses",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Total equals pending + confirmed + cancelled', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.total).to.eql(json.pending + json.confirmed + json.cancelled);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/bookings/stats"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "GET /bookings — {id}",
       "item": [
         {
-          "name": "TC-021 Get booking by ID — existing booking",
+          "name": "TC-026 Get booking by ID — existing booking",
           "event": [
             {
               "listen": "prerequest",
@@ -827,7 +980,7 @@
           "response": []
         },
         {
-          "name": "TC-022 non-existent ID (99999)",
+          "name": "TC-027 non-existent ID (99999)",
           "event": [
             {
               "listen": "test",
@@ -852,7 +1005,7 @@
           "response": []
         },
         {
-          "name": "TC-023 negative ID (-1)",
+          "name": "TC-028 negative ID (-1)",
           "event": [
             {
               "listen": "test",
@@ -874,7 +1027,7 @@
           "response": []
         },
         {
-          "name": "TC-024 string ID (abc)",
+          "name": "TC-029 string ID (abc)",
           "event": [
             {
               "listen": "test",
@@ -901,7 +1054,7 @@
       "name": "PUT /bookings — {id}",
       "item": [
         {
-          "name": "TC-025 Update booking — pending → confirmed",
+          "name": "TC-030 Update booking — pending → confirmed",
           "event": [
             {
               "listen": "prerequest",
@@ -959,7 +1112,7 @@
           "response": []
         },
         {
-          "name": "TC-026 Update booking — confirmed → cancelled",
+          "name": "TC-031 Update booking — confirmed → cancelled",
           "event": [
             {
               "listen": "test",
@@ -993,7 +1146,7 @@
           "response": []
         },
         {
-          "name": "TC-027 invalid status value (flying)",
+          "name": "TC-032 invalid status value (flying)",
           "event": [
             {
               "listen": "prerequest",
@@ -1048,7 +1201,7 @@
           "response": []
         },
         {
-          "name": "TC-028 status transition — cancelled → pending",
+          "name": "TC-033 status transition — cancelled → pending",
           "event": [
             {
               "listen": "prerequest",
@@ -1113,7 +1266,7 @@
           "response": []
         },
         {
-          "name": "TC-029 status transition — cancelled → confirmed",
+          "name": "TC-034 status transition — cancelled → confirmed",
           "event": [
             {
               "listen": "prerequest",
@@ -1178,7 +1331,7 @@
           "response": []
         },
         {
-          "name": "TC-030 non-existent ID (99999)",
+          "name": "TC-035 non-existent ID (99999)",
           "event": [
             {
               "listen": "test",
@@ -1209,7 +1362,7 @@
           "response": []
         },
         {
-          "name": "TC-031 string ID (abc)",
+          "name": "TC-036 string ID (abc)",
           "event": [
             {
               "listen": "test",
@@ -1245,7 +1398,7 @@
       "name": "DELETE /bookings — {id}",
       "item": [
         {
-          "name": "TC-032 Delete booking — cancelled status",
+          "name": "TC-037 Delete booking — cancelled status",
           "event": [
             {
               "listen": "prerequest",
@@ -1306,7 +1459,7 @@
           "response": []
         },
         {
-          "name": "TC-033 delete booking in pending status",
+          "name": "TC-038 delete booking in pending status",
           "event": [
             {
               "listen": "prerequest",
@@ -1352,7 +1505,7 @@
           "response": []
         },
         {
-          "name": "TC-034 delete booking in confirmed status",
+          "name": "TC-039 delete booking in confirmed status",
           "event": [
             {
               "listen": "prerequest",
@@ -1408,7 +1561,7 @@
           "response": []
         },
         {
-          "name": "TC-035 non-existent ID (99999)",
+          "name": "TC-040 non-existent ID (99999)",
           "event": [
             {
               "listen": "test",
