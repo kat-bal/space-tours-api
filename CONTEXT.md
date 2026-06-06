@@ -159,7 +159,7 @@ Swagger: http://localhost:8000/docs
 ## Nástroje
 
 - **Swagger UI** — interaktívna dokumentácia, ideálna pre začiatočníkov
-- **Postman** — kolekcia uložená v repozitári (`Space-Tours-API.postman_collection.json`)
+- **Postman** — kolekcia uložená v repozitári (`Space-Tours-API.postman_collection.json`); dve environments: `Space-Tours-API-prod` a `Space-Tours-API-staging` (prepínajú `{{base_url}}`)
 - **Neon SQL Editor** — priamy prístup do databázy cez browser
 
 ---
