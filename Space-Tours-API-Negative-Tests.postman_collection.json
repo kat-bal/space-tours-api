@@ -493,7 +493,7 @@
           "response": []
         },
         {
-          "name": "NEG-16 pagination — limit=999 (above maximum)",
+          "name": "NEG-16 pagination — limit=101 (boundary, above maximum of 100)",
           "event": [
             {
               "listen": "test",
@@ -511,10 +511,10 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/bookings?limit=999",
+              "raw": "{{base_url}}/bookings?limit=101",
               "host": ["{{base_url}}"],
               "path": ["bookings"],
-              "query": [{ "key": "limit", "value": "999" }]
+              "query": [{ "key": "limit", "value": "101" }]
             }
           },
           "response": []
