@@ -24,6 +24,9 @@ _(nič momentálne)_
 - [ ] Generovanie dokumentov pre klienta
   - Potvrdenie objednávky (booking confirmation) — PDF alebo HTML
   - Prípadne ďalšie doklady (palubný lístok, itinerár cesty...)
+- [ ] Client-facing FE — verejná stránka pre zákazníkov (oddelená od Stellar Command backoffice)
+  - `source` pole na bookingu (`"backoffice"` / `"web"` / atď.) — non-breaking, škáluje na ľubovoľný kanál
+  - Záložka **Leads** v Stellar Command — prichádzajúce bookings z klientského FE, kým ich backoffice nespracuje
 - [ ] Negative testing scenáre (dokumentácia) - aktuálne jeden negative test v Postman kolekcii
 - [ ] Design Doc — popis funkcionality appky so screenshotmi, slúži ako podklad pre vývoj aj testovanie
 
