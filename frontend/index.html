@@ -1028,7 +1028,8 @@
       });
       if (r.ok) {
         showToast('Mission booked successfully');
-        document.getElementById('f-name').value = '';
+        document.getElementById('f-first-name').value = '';
+        document.getElementById('f-last-name').value = '';
         document.getElementById('f-dest').value = '';
         document.getElementById('f-date').value = '';
         refreshSelect('f-dest');
