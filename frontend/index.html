@@ -1001,7 +1001,22 @@
     loadBookings();
   }
 
-  function showTab(tab) {
+  const ROUTES = {
+    '/dashboard':    'missions',
+    '/bookings/new': 'new',
+  };
+
+  function tabForPath(path) {
+    return ROUTES[path] || 'missions';
+  }
+
+  function pathForTab(tab) {
+    return Object.keys(ROUTES).find(k => ROUTES[k] === tab) || '/dashboard';
+  }
+
+  function renderTab(tab) {
+    const canonical = pathForTab(tab);
+    if (location.pathname !== canonical) history.replaceState(null, '', canonical);
     document.getElementById('tab-missions').classList.toggle('hidden', tab !== 'missions');
     document.getElementById('tab-new').classList.toggle('hidden', tab !== 'new');
     document.querySelectorAll('.tab').forEach((t, i) => {
@@ -1010,6 +1025,13 @@
     });
     if (tab === 'missions') loadBookings();
   }
+
+  function showTab(tab) {
+    history.pushState(null, '', pathForTab(tab));
+    renderTab(tab);
+  }
+
+  window.addEventListener('popstate', () => renderTab(tabForPath(location.pathname)));
 
   async function createBooking() {
     const firstName = document.getElementById('f-first-name').value.trim();
@@ -1333,7 +1355,7 @@
     .forEach(initSelect);
 
   updateSortHeaders();
-  loadBookings();
+  renderTab(tabForPath(location.pathname));
 </script>
 </body>
 </html>
