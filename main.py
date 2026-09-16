@@ -13,22 +13,22 @@ seed()
 app = FastAPI(
     title="🪐 Space Tours API",
     description="""
-## Vesmírny objednávkový systém — výukový REST API sandbox
+## Space booking system — REST API sandbox
 
-Pomocou tohto API môžeš:
-- **Vytvoriť** objednávku miesta na vesmírnej lodi (POST)
-- **Zobraziť** zoznam všetkých cestujúcich (GET)
-- **Zobraziť** detail jednej objednávky (GET)
-- **Zmeniť** existujúcu objednávku (PUT)
-- **Zrušiť** objednávku (DELETE)
+Using this API you can:
+- **Create** a seat booking on a spacecraft (POST)
+- **List** all bookings (GET)
+- **Retrieve** a single booking (GET)
+- **Update** an existing booking (PUT)
+- **Delete** a booking (DELETE)
 
-### Dostupné destinácie
+### Available destinations
 `Mercury` | `Venus` | `Mars` | `Jupiter` | `Saturn` | `Uranus` | `Neptune`
 
-### Triedy sedenia
+### Seat classes
 `economy` | `business` | `vip`
 
-### Stavy objednávky
+### Booking status flow
 `pending` → `confirmed` → `cancelled`
     """,
     version="1.0.0",
@@ -64,13 +64,13 @@ DESTINATIONS = [
 @app.get(
     "/destinations",
     tags=["Destinations"],
-    summary="Zoznam dostupných destinácií",
-    response_description="Pole planét s ich parametrami",
+    summary="List available destinations",
+    response_description="Array of planets with their parameters",
 )
 def list_destinations():
     """
-    Vráti zoznam všetkých planét, na ktoré je možné cestovať.
-    Obsahuje vzdialenosť, dĺžku letu a cenu.
+    Returns a list of all planets available for travel.
+    Includes distance, flight duration, and price.
     """
     return destinations
 
@@ -81,31 +81,34 @@ def list_destinations():
     response_model=BookingResponse,
     status_code=201,
     tags=["Bookings"],
-    summary="Vytvor novú objednávku",
-    response_description="Vytvorená objednávka vrátane prideleného ID",
+    summary="Create a new booking",
+    response_description="Created booking including the assigned ID",
+    responses={
+        422: {"description": "Invalid destination or seat class"},
+    },
 )
 def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
     """
-    Vytvorí novú objednávku miesta na vesmírnej lodi.
+    Creates a new seat booking on a spacecraft.
 
-    - **passenger.first_name**: krstné meno cestujúceho
-    - **passenger.last_name**: priezvisko cestujúceho
-    - **destination**: cieľová planéta (napr. Mars)
-    - **departure_date**: dátum odletu vo formáte YYYY-MM-DD
-    - **seat_class**: trieda sedenia (economy / business / vip)
+    - **passenger.first_name**: passenger's first name
+    - **passenger.last_name**: passenger's last name
+    - **destination**: target planet (e.g. Mars)
+    - **departure_date**: departure date in YYYY-MM-DD format
+    - **seat_class**: seat class (economy / business / vip)
 
-    Objednávka bude mať automaticky status **pending**.
+    The booking will automatically have status **pending**.
     """
     valid_destinations = [d["name"] for d in DESTINATIONS]
     if booking.destination not in valid_destinations:
         raise HTTPException(
             status_code=422,
-            detail=f"Neplatná destinácia. Dostupné: {valid_destinations}"
+            detail=f"Invalid destination. Available: {valid_destinations}"
         )
     if booking.seat_class not in ["economy", "business", "vip"]:
         raise HTTPException(
             status_code=422,
-            detail="Neplatná trieda sedenia. Dostupné: economy, business, vip"
+            detail="Invalid seat class. Available: economy, business, vip"
         )
 
     db_booking = BookingDB(
@@ -126,11 +129,11 @@ def create_booking(booking: BookingCreate, db: Session = Depends(get_db)):
     "/bookings/stats",
     response_model=BookingStats,
     tags=["Bookings"],
-    summary="Štatistiky objednávok",
-    response_description="Počty objednávok podľa stavu",
+    summary="Booking statistics",
+    response_description="Booking counts by status",
 )
 def get_booking_stats(db: Session = Depends(get_db)):
-    """Vráti celkový počet objednávok rozdelený podľa stavu."""
+    """Returns the total number of bookings broken down by status."""
     total     = db.query(BookingDB).count()
     pending   = db.query(BookingDB).filter(BookingDB.status == "pending").count()
     confirmed = db.query(BookingDB).filter(BookingDB.status == "confirmed").count()
@@ -143,29 +146,29 @@ def get_booking_stats(db: Session = Depends(get_db)):
     "/bookings",
     response_model=PaginatedBookings,
     tags=["Bookings"],
-    summary="Zoznam objednávok",
-    response_description="Stránkovaný zoznam objednávok",
+    summary="List bookings",
+    response_description="Paginated list of bookings",
 )
 def list_bookings(
-    destination: Optional[str] = Query(None, description="Filtruj podľa planéty, napr. Mars"),
-    status:      Optional[str] = Query(None, description="Filtruj podľa stavu: pending, confirmed, cancelled"),
-    seat_class:  Optional[str] = Query(None, description="Filtruj podľa triedy sedenia: economy, business, vip"),
-    page:        int           = Query(1,    ge=1, description="Číslo stránky"),
-    limit:       int           = Query(10,   ge=1, le=100, description="Počet položiek na stránku"),
-    sort_by:     Optional[str] = Query("id", description="Zoraď podľa: id, passenger_first_name, passenger_last_name, destination, departure_date, seat_class, status, created_at"),
-    sort_dir:    Optional[str] = Query("asc", description="Smer: asc, desc"),
+    destination: Optional[str] = Query(None, description="Filter by planet, e.g. Mars"),
+    status:      Optional[str] = Query(None, description="Filter by status: pending, confirmed, cancelled"),
+    seat_class:  Optional[str] = Query(None, description="Filter by seat class: economy, business, vip"),
+    page:        int           = Query(1,    ge=1, description="Page number"),
+    limit:       int           = Query(10,   ge=1, le=100, description="Items per page"),
+    sort_by:     Optional[str] = Query("id", description="Sort by: id, passenger_first_name, passenger_last_name, destination, departure_date, seat_class, status, created_at"),
+    sort_dir:    Optional[str] = Query("asc", description="Sort direction: asc, desc"),
     db: Session = Depends(get_db),
 ):
     """
-    Vráti stránkovaný zoznam objednávok. Voliteľné filtre:
+    Returns a paginated list of bookings. Optional filters:
 
-    - **destination**: zobraz len objednávky na konkrétnu planétu
-    - **status**: zobraz len objednávky v danom stave
-    - **seat_class**: zobraz len objednávky v danej triede sedenia
-    - **page**: číslo stránky (default: 1)
-    - **limit**: počet položiek na stránku (default: 10, max: 100)
-    - **sort_by**: stĺpec zoradenia (default: id)
-    - **sort_dir**: smer zoradenia asc/desc (default: asc)
+    - **destination**: show only bookings for a specific planet
+    - **status**: show only bookings with the given status
+    - **seat_class**: show only bookings in the given seat class
+    - **page**: page number (default: 1)
+    - **limit**: items per page (default: 10, max: 100)
+    - **sort_by**: sort column (default: id)
+    - **sort_dir**: sort direction asc/desc (default: asc)
     """
     SORTABLE = {"id", "passenger_first_name", "passenger_last_name", "destination", "departure_date", "seat_class", "status", "created_at"}
     sort_column = getattr(BookingDB, sort_by if sort_by in SORTABLE else "id")
@@ -192,18 +195,21 @@ def list_bookings(
     "/bookings/{booking_id}",
     response_model=BookingResponse,
     tags=["Bookings"],
-    summary="Detail objednávky",
-    response_description="Jedna objednávka podľa ID",
+    summary="Get booking by ID",
+    response_description="A single booking by ID",
+    responses={
+        404: {"description": "Booking not found"},
+    },
 )
 def get_booking(booking_id: int, db: Session = Depends(get_db)):
     """
-    Vráti detail konkrétnej objednávky podľa jej **ID**.
+    Returns the details of a specific booking by its **ID**.
 
-    Ak objednávka neexistuje, vráti **404 Not Found**.
+    If the booking does not exist, returns **404 Not Found**.
     """
     booking = db.query(BookingDB).filter(BookingDB.id == booking_id).first()
     if not booking:
-        raise HTTPException(status_code=404, detail=f"Objednávka s ID {booking_id} neexistuje")
+        raise HTTPException(status_code=404, detail=f"Booking with ID {booking_id} not found")
     return booking
 
 
@@ -220,27 +226,31 @@ VALID_STATUS_TRANSITIONS = {
     "/bookings/{booking_id}",
     response_model=BookingResponse,
     tags=["Bookings"],
-    summary="Uprav objednávku",
-    response_description="Aktualizovaná objednávka",
+    summary="Update a booking",
+    response_description="Updated booking",
+    responses={
+        404: {"description": "Booking not found"},
+        422: {"description": "Invalid status transition"},
+    },
 )
 def update_booking(booking_id: int, updates: BookingUpdate, db: Session = Depends(get_db)):
     """
-    Aktualizuje existujúcu objednávku. Môžeš zmeniť ľubovoľné pole.
+    Updates an existing booking. Any field can be changed.
 
-    ### Povolené prechody stavu (status transitions):
+    ### Allowed status transitions:
     - `pending` → `confirmed`
     - `pending` → `cancelled`
     - `confirmed` → `cancelled`
-    - `cancelled` → *(žiadny ďalší prechod nie je povolený)*
+    - `cancelled` → *(no further transitions allowed)*
 
-    Príklady použitia:
-    - Potvrdenie objednávky: `{"status": "confirmed"}`
-    - Zrušenie objednávky: `{"status": "cancelled"}`
-    - Zmena destinácie: `{"destination": "Saturn"}`
+    Usage examples:
+    - Confirm a booking: `{"status": "confirmed"}`
+    - Cancel a booking: `{"status": "cancelled"}`
+    - Change destination: `{"destination": "Saturn"}`
     """
     booking = db.query(BookingDB).filter(BookingDB.id == booking_id).first()
     if not booking:
-        raise HTTPException(status_code=404, detail=f"Objednávka s ID {booking_id} neexistuje")
+        raise HTTPException(status_code=404, detail=f"Booking with ID {booking_id} not found")
 
     update_data = updates.model_dump(exclude_unset=True)  # len polia ktoré prišli v requeste
 
@@ -258,8 +268,8 @@ def update_booking(booking_id: int, updates: BookingUpdate, db: Session = Depend
         if new_status not in allowed:
             raise HTTPException(
                 status_code=422,
-                detail=f"Neplatný prechod stavu: '{current_status}' → '{new_status}'. "
-                       f"Povolené prechody z '{current_status}': {allowed if allowed else 'žiadne'}"
+                detail=f"Invalid status transition: '{current_status}' → '{new_status}'. "
+                       f"Allowed transitions from '{current_status}': {allowed if allowed else 'none'}"
             )
 
     for field, value in update_data.items():
@@ -275,31 +285,35 @@ def update_booking(booking_id: int, updates: BookingUpdate, db: Session = Depend
     "/bookings/{booking_id}",
     status_code=200,
     tags=["Bookings"],
-    summary="Zmaž objednávku",
-    response_description="Potvrdenie zmazania",
+    summary="Delete a booking",
+    response_description="Deletion confirmation",
+    responses={
+        404: {"description": "Booking not found"},
+        422: {"description": "Booking is not in cancelled status"},
+    },
 )
 def delete_booking(booking_id: int, db: Session = Depends(get_db)):
     """
-    Natrvalo vymaže objednávku z databázy.
+    Permanently deletes a booking from the database.
 
-    Podmienka: objednávka musí byť v stave **cancelled**.
-    Ak objednávka neexistuje, vráti **404 Not Found**.
-    Ak objednávka nie je cancelled, vráti **422 Unprocessable Entity**.
+    Condition: the booking must have status **cancelled**.
+    If the booking does not exist, returns **404 Not Found**.
+    If the booking is not cancelled, returns **422 Unprocessable Entity**.
     """
     booking = db.query(BookingDB).filter(BookingDB.id == booking_id).first()
     if not booking:
-        raise HTTPException(status_code=404, detail=f"Objednávka s ID {booking_id} neexistuje")
+        raise HTTPException(status_code=404, detail=f"Booking with ID {booking_id} not found")
 
     if booking.status != "cancelled":
         raise HTTPException(
             status_code=422,
-            detail=f"Objednávku možno vymazať iba ak je v stave 'cancelled'. "
-                   f"Aktuálny stav: '{booking.status}'"
+            detail=f"Booking can only be deleted when status is 'cancelled'. "
+                   f"Current status: '{booking.status}'"
         )
 
     db.delete(booking)
     db.commit()
-    return {"message": f"Objednávka {booking_id} bola úspešne zmazaná", "deleted_id": booking_id}
+    return {"message": f"Booking {booking_id} has been successfully deleted", "deleted_id": booking_id}
 
 
 # GET / — health check
@@ -307,7 +321,7 @@ def delete_booking(booking_id: int, db: Session = Depends(get_db)):
 def root():
     return {
         "status": "online",
-        "message": "🪐 Space Tours API beží. Choď na /docs pre Swagger dokumentáciu.",
+        "message": "🪐 Space Tours API is running. Go to /docs for Swagger documentation.",
         "docs": "/docs",
         "version": "1.0.0"
     }
