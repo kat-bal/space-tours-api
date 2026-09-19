@@ -29,7 +29,7 @@ class Passenger(BaseModel):
 
 
 class BookingCreate(BaseModel):
-    """Čo musí obsahovať POST request body"""
+    """Required fields for the POST request body"""
     passenger:      Passenger = Field(...)
     destination:    str       = Field(..., example="Mars")
     departure_date: str       = Field(..., example="2026-07-20")
@@ -47,7 +47,7 @@ class BookingCreate(BaseModel):
 
 
 class BookingUpdate(BaseModel):
-    """Čo možno zmeniť cez PUT request — všetky polia sú voliteľné"""
+    """Fields that can be changed via PUT request — all fields are optional"""
     passenger:      Optional[Passenger] = None
     destination:    Optional[str]       = None
     departure_date: Optional[str]       = None
@@ -56,7 +56,7 @@ class BookingUpdate(BaseModel):
 
 
 class BookingStats(BaseModel):
-    """Štatistiky objednávok podľa stavu"""
+    """Booking counts by status"""
     total:     int
     pending:   int
     confirmed: int
@@ -64,7 +64,7 @@ class BookingStats(BaseModel):
 
 
 class PaginatedBookings(BaseModel):
-    """Stránkovaný zoznam objednávok"""
+    """Paginated list of bookings"""
     items: List['BookingResponse']
     total: int
     page:  int
@@ -72,7 +72,7 @@ class PaginatedBookings(BaseModel):
 
 
 class BookingResponse(BaseModel):
-    """Čo vráti API v response"""
+    """Fields returned by the API in a response"""
     id:             int
     passenger:      Passenger
     destination:    str
