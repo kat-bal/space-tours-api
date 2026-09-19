@@ -1,67 +1,70 @@
-# 🪐 Space Tours API — Výukový REST API Sandbox
+# 🪐 Space Tours API — REST API Sandbox
 
-Jednoduchý REST API sandbox na výuku základov práce s HTTP metódami.  
-Téma: objednávkový systém zájazdov na planéty slnečnej sústavy.
+A simple REST API sandbox for practising HTTP methods.  
+Theme: a booking system for space travel to planets of the solar system.
 
 ---
 
-## ⚡ Rýchly štart
+## ⚡ Quick start
 
 ```bash
-# 1. Aktivuj virtuálne prostredie
+# 1. Activate virtual environment
 # Windows:
 venv\Scripts\activate
 # Mac/Linux:
 source venv/bin/activate
 
-# 2. Nainštaluj závislosti (len prvýkrát)
+# 2. Install dependencies (first time only)
 pip install -r requirements.txt
 
-# 3. Spusti server
+# 3. Start the server
 uvicorn main:app --reload
 ```
 
-Server beží na: **http://localhost:8000**  
-Swagger dokumentácia: **http://localhost:8000/docs**
+Server running at: **http://localhost:8000**  
+Swagger documentation: **http://localhost:8000/docs**
 
 ---
 
-## 📋 Endpointy
+## 📋 Endpoints
 
-| Metóda | URL | Popis |
-|--------|-----|-------|
+| Method | URL | Description |
+|--------|-----|-------------|
 | GET | `/` | Health check |
-| GET | `/destinations` | Zoznam planét |
-| POST | `/bookings` | Nová objednávka |
-| GET | `/bookings` | Všetky objednávky |
-| GET | `/bookings/stats` | Štatistiky (total, pending, confirmed, cancelled) |
-| GET | `/bookings/{id}` | Detail objednávky |
-| PUT | `/bookings/{id}` | Uprav objednávku |
-| DELETE | `/bookings/{id}` | Zmaž objednávku |
+| GET | `/destinations` | List of planets |
+| POST | `/bookings` | Create a new booking |
+| GET | `/bookings` | All bookings |
+| GET | `/bookings/stats` | Statistics (total, pending, confirmed, cancelled) |
+| GET | `/bookings/{id}` | Booking detail |
+| PUT | `/bookings/{id}` | Update a booking |
+| DELETE | `/bookings/{id}` | Delete a booking |
 
 ---
 
-## 🧪 Príklady requestov
+## 🧪 Request examples
 
-### POST — Nová objednávka
+### POST — Create a booking
 ```
 POST http://localhost:8000/bookings
 Content-Type: application/json
 
 {
-  "passenger_name": "Jozef Novák",
+  "passenger": {
+    "first_name": "Jane",
+    "last_name": "Doe"
+  },
   "destination": "Mars",
   "departure_date": "2026-07-20",
   "seat_class": "economy"
 }
 ```
 
-### GET — Všetky objednávky na Mars
+### GET — All bookings to Mars
 ```
 GET http://localhost:8000/bookings?destination=Mars
 ```
 
-### PUT — Potvrď objednávku
+### PUT — Confirm a booking
 ```
 PUT http://localhost:8000/bookings/1
 Content-Type: application/json
@@ -71,18 +74,18 @@ Content-Type: application/json
 }
 ```
 
-### DELETE — Zmaž objednávku
+### DELETE — Delete a booking
 ```
 DELETE http://localhost:8000/bookings/1
 ```
 
 ---
 
-## 🪐 Dostupné destinácie
+## 🪐 Available destinations
 Mercury | Venus | Mars | Jupiter | Saturn | Uranus | Neptune
 
-## 💺 Triedy sedenia
+## 💺 Seat classes
 economy | business | vip
 
-## 📊 Stavy objednávky
+## 📊 Booking status flow
 pending → confirmed → cancelled
