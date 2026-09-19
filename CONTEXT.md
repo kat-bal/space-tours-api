@@ -7,7 +7,7 @@ This file serves as a quick onboarding document for new conversations, collabora
 ## What this project is
 
 A REST API sandbox for learning the basics of HTTP methods.  
-Theme: a booking system for space travel to planets of the solar system.
+Theme: a booking system for space travel to planets of the Solar System.
 
 **Audience:** QA beginners and anyone learning API testing  
 **Author:** Senior QA with a development background

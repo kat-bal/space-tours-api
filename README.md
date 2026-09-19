@@ -1,7 +1,7 @@
 # 🪐 Space Tours API — REST API Sandbox
 
 A simple REST API sandbox for practising HTTP methods.  
-Theme: a booking system for space travel to planets of the solar system.
+Theme: a booking system for space travel to planets of the Solar System.
 
 ---
 
