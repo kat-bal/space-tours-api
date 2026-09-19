@@ -34,7 +34,7 @@ Swagger documentation: **http://localhost:8000/docs**
 | GET | `/destinations` | List of planets |
 | POST | `/bookings` | Create a new booking |
 | GET | `/bookings` | All bookings |
-| GET | `/bookings/stats` | Statistics (total, pending, confirmed, cancelled) |
+| GET | `/bookings/stats` | Statistics |
 | GET | `/bookings/{id}` | Booking detail |
 | PUT | `/bookings/{id}` | Update a booking |
 | DELETE | `/bookings/{id}` | Delete a booking |
